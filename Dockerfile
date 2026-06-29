@@ -63,11 +63,11 @@ RUN bench init --skip-redis-config-generation --frappe-branch version-15 frappe-
     && bench get-app erpnext --branch version-15 \
     && bench get-app hrms --branch version-15
 
-# Clone custom app repo, then install from local path
-RUN git clone https://github.com/apcvala68-ux/ERPNext-NAYANOP.git --branch main --depth 1 \
-    && cd frappe-bench \
-    && bench get-app automotive_crm /home/frappe/ERPNext-NAYANOP/automotive_crm \
-    && cd /home/frappe && rm -rf ERPNext-NAYANOP
+# Clone custom app directly into bench apps
+RUN git clone https://github.com/apcvala68-ux/ERPNext-NAYANOP.git --branch main --depth 1 /tmp/repo \
+    && cp -r /tmp/repo/automotive_crm /home/frappe/frappe-bench/apps/automotive_crm \
+    && rm -rf /tmp/repo \
+    && chown -R frappe:frappe /home/frappe/frappe-bench/apps/automotive_crm
 
 # Switch back to root for entrypoint
 USER root
