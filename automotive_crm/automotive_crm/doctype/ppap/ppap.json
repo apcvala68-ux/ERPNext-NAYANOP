@@ -1,0 +1,207 @@
+{
+ "actions": [],
+ "autoname": "naming_series:",
+ "creation": "2026-06-29 19:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "oem_customer",
+  "part_master",
+  "section_dates",
+  "submission_date",
+  "approval_date",
+  "status",
+  "section_documents",
+  "design_record",
+  "engineering_changes",
+  "process_flow",
+  "control_plan",
+  "measurement_system",
+  "dimensional_results",
+  "material_certification",
+  "performance_results",
+  "section_approval",
+  "approved_by",
+  "approval_notes",
+  "section_notes",
+  "notes",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Naming Series",
+   "options": "PPAP-.YYYY.-",
+   "reqd": 1
+  },
+  {
+   "fieldname": "oem_customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "OEM Customer",
+   "options": "OEM Customer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "part_master",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Part Master",
+   "options": "Part Master",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_dates",
+   "fieldtype": "Section Break",
+   "label": "Dates"
+  },
+  {
+   "fieldname": "submission_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Submission Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "approval_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Approval Date"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Draft\nSubmitted\nUnder Review\nApproved\nRejected\nConditional",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_documents",
+   "fieldtype": "Section Break",
+   "label": "PPAP Documents"
+  },
+  {
+   "fieldname": "design_record",
+   "fieldtype": "Attach",
+   "label": "Design Record"
+  },
+  {
+   "fieldname": "engineering_changes",
+   "fieldtype": "Attach",
+   "label": "Engineering Changes"
+  },
+  {
+   "fieldname": "process_flow",
+   "fieldtype": "Attach",
+   "label": "Process Flow Diagram"
+  },
+  {
+   "fieldname": "control_plan",
+   "fieldtype": "Attach",
+   "label": "Control Plan"
+  },
+  {
+   "fieldname": "measurement_system",
+   "fieldtype": "Attach",
+   "label": "Measurement System Analysis"
+  },
+  {
+   "fieldname": "dimensional_results",
+   "fieldtype": "Attach",
+   "label": "Dimensional Results"
+  },
+  {
+   "fieldname": "material_certification",
+   "fieldtype": "Attach",
+   "label": "Material Certification"
+  },
+  {
+   "fieldname": "performance_results",
+   "fieldtype": "Attach",
+   "label": "Performance Results"
+  },
+  {
+   "fieldname": "section_approval",
+   "fieldtype": "Section Break",
+   "label": "Approval"
+  },
+  {
+   "fieldname": "approved_by",
+   "fieldtype": "Link",
+   "label": "Approved By",
+   "options": "User"
+  },
+  {
+   "fieldname": "approval_notes",
+   "fieldtype": "Text Editor",
+   "label": "Approval Notes"
+  },
+  {
+   "fieldname": "section_notes",
+   "fieldtype": "Section Break",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Text Editor",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "PPAP",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-06-29 19:00:00.000000",
+ "module": "Automotive CRM",
+ "name": "PPAP",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales User",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "oem_customer,part_master,status",
+ "sort_field": "modification",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

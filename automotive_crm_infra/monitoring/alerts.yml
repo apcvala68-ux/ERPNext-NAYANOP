@@ -1,0 +1,290 @@
+# Alerting Configuration
+
+## Severity Levels
+
+| Level | Description | Response Time |
+|-------|-------------|---------------|
+| Critical | System down or data loss | Immediate |
+| Warning | Degraded performance | 1 hour |
+| Info | Non-urgent issues | Next business day |
+
+## Alert Rules
+
+### System Alerts
+
+```yaml
+system_alerts:
+  - name: "High CPU Usage"
+    condition: "cpu_usage > 80"
+    duration: "5m"
+    severity: "warning"
+    notify: ["slack"]
+    
+  - name: "Critical CPU Usage"
+    condition: "cpu_usage > 95"
+    duration: "2m"
+    severity: "critical"
+    notify: ["slack", "email", "pager"]
+    
+  - name: "High Memory Usage"
+    condition: "memory_usage > 85"
+    duration: "5m"
+    severity: "warning"
+    notify: ["slack"]
+    
+  - name: "Critical Memory Usage"
+    condition: "memory_usage > 95"
+    duration: "2m"
+    severity: "critical"
+    notify: ["slack", "email", "pager"]
+    
+  - name: "Low Disk Space"
+    condition: "disk_usage > 80"
+    severity: "warning"
+    notify: ["slack", "email"]
+    
+  - name: "Critical Disk Space"
+    condition: "disk_usage > 90"
+    severity: "critical"
+    notify: ["slack", "email", "pager"]
+```
+
+### Application Alerts
+
+```yaml
+application_alerts:
+  - name: "High Error Rate"
+    condition: "rate(http_requests_total{status=~'5..'}[5m]) > 0.1"
+    severity: "critical"
+    notify: ["slack", "email"]
+    
+  - name: "High Response Time"
+    condition: "histogram_quantile(0.95, http_request_duration_seconds) > 2"
+    severity: "warning"
+    notify: ["slack"]
+    
+  - name: "Critical Response Time"
+    condition: "histogram_quantile(0.95, http_request_duration_seconds) > 5"
+    severity: "critical"
+    notify: ["slack", "email", "pager"]
+    
+  - name: "Low Throughput"
+    condition: "rate(http_requests_total[5m]) < 10"
+    severity: "warning"
+    notify: ["slack"]
+```
+
+### Database Alerts
+
+```yaml
+database_alerts:
+  - name: "High Connection Count"
+    condition: "db_connections_active > 80"
+    severity: "warning"
+    notify: ["slack"]
+    
+  - name: "Critical Connection Count"
+    condition: "db_connections_active > 95"
+    severity: "critical"
+    notify: ["slack", "email", "pager"]
+    
+  - name: "Slow Queries"
+    condition: "rate(mysql_global_status_slow_queries[5m]) > 5"
+    severity: "warning"
+    notify: ["slack"]
+    
+  - name: "Replication Lag"
+    condition: "mysql_slave_status_seconds_behind_master > 30"
+    severity: "warning"
+    notify: ["slack"]
+    
+  - name: "Critical Replication Lag"
+    condition: "mysql_slave_status_seconds_behind_master > 60"
+    severity: "critical"
+    notify: ["slack", "email"]
+```
+
+### Redis Alerts
+
+```yaml
+redis_alerts:
+  - name: "High Memory Usage"
+    condition: "redis_memory_used_bytes / redis_memory_max_bytes > 0.8"
+    severity: "warning"
+    notify: ["slack"]
+    
+  - name: "Low Hit Rate"
+    condition: "redis_keyspace_hits / (redis_keyspace_hits + redis_keyspace_misses) < 0.9"
+    severity: "warning"
+    notify: ["slack"]
+    
+  - name: "High Eviction Rate"
+    condition: "rate(redis_evicted_keys_total[5m]) > 100"
+    severity: "warning"
+    notify: ["slack"]
+```
+
+### Business Alerts
+
+```yaml
+business_alerts:
+  - name: "High RFQ Volume"
+    condition: "rate(rfq_created_total[1h]) > 10"
+    severity: "info"
+    notify: ["slack"]
+    
+  - name: "Low Quotation Conversion"
+    condition: "quotation_conversion_rate < 0.3"
+    duration: "24h"
+    severity: "warning"
+    notify: ["slack", "email"]
+    
+  - name: "Quality Complaint Spike"
+    condition: "rate(quality_complaints_total[1h]) > 5"
+    severity: "warning"
+    notify: ["slack", "email"]
+```
+
+## Notification Channels
+
+### Slack
+
+```yaml
+slack:
+  webhook_url: "https://hooks.slack.com/services/XXX/YYY/ZZZ"
+  channel: "#alerts"
+  username: "Automotive CRM Bot"
+  icon_emoji: ":robot_face:"
+```
+
+### Email
+
+```yaml
+email:
+  smtp_host: "smtp.gmail.com"
+  smtp_port: 587
+  smtp_user: "alerts@yourorg.com"
+  smtp_password: "your-app-password"
+  from_address: "alerts@yourorg.com"
+  to_addresses:
+    - "admin@yourorg.com"
+    - "devops@yourorg.com"
+```
+
+### PagerDuty
+
+```yaml
+pagerduty:
+  integration_key: "your-integration-key"
+  severity_map:
+    critical: "critical"
+    warning: "warning"
+    info: "info"
+```
+
+## Escalation Policies
+
+```yaml
+escalation_policies:
+  - name: "Critical Issues"
+    steps:
+      - notify: ["slack"]
+        wait: "0m"
+      - notify: ["email"]
+        wait: "5m"
+      - notify: ["pager"]
+        wait: "15m"
+        
+  - name: "Warning Issues"
+    steps:
+      - notify: ["slack"]
+        wait: "0m"
+      - notify: ["email"]
+        wait: "30m"
+```
+
+## Maintenance Windows
+
+```yaml
+maintenance_windows:
+  - name: "Weekly Maintenance"
+    schedule: "Sunday 02:00-04:00 UTC"
+    alerts_suppressed: true
+    notification:
+      - type: "slack"
+        message: "Weekly maintenance window starting in 1 hour"
+        
+  - name: "Monthly Updates"
+    schedule: "First Sunday 02:00-06:00 UTC"
+    alerts_suppressed: true
+    notification:
+      - type: "slack"
+        message: "Monthly update window starting in 1 hour"
+      - type: "email"
+        message: "Monthly update window starting in 1 hour"
+```
+
+## Alert Templates
+
+### Slack Message Template
+
+```json
+{
+  "blocks": [
+    {
+      "type": "header",
+      "text": {
+        "type": "plain_text",
+        "text": "🚨 Alert: {{ alert_name }}"
+      }
+    },
+    {
+      "type": "section",
+      "fields": [
+        {
+          "type": "mrkdwn",
+          "text": "*Severity:* {{ severity }}"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*Time:* {{ timestamp }}"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*Description:* {{ description }}"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*Value:* {{ value }}"
+      }
+    }
+  ]
+}
+```
+
+### Email Template
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Alert: {{ alert_name }}</title>
+</head>
+<body>
+    <h1>🚨 Alert: {{ alert_name }}</h1>
+    <p><strong>Severity:</strong> {{ severity }}</p>
+    <p><strong>Time:</strong> {{ timestamp }}</p>
+    <p><strong>Description:</strong> {{ description }}</p>
+    <p><strong>Value:</strong> {{ value }}</p>
+    <hr>
+    <p><small>Automotive CRM Monitoring System</small></p>
+</body>
+</html>
+```

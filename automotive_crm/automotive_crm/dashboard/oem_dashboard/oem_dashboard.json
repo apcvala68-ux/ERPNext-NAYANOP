@@ -1,0 +1,72 @@
+{
+ "charts": [
+  {
+   "chart_name": "RFQ by Status",
+   "chart_type": "Donut",
+   "doctype": "RFQ",
+   "filters": [["docstatus", "=", "1"]],
+   "group_by": "status",
+   "name": "rfq_by_status",
+   "owner": "Administrator"
+  },
+  {
+   "chart_name": "Revenue by OEM",
+   "chart_type": "Bar",
+   "doctype": "Quotation",
+   "filters": [["docstatus", "=", "1"], ["status", "=", "Accepted"]],
+   "group_by": "oem_customer",
+   "name": "revenue_by_oem",
+   "owner": "Administrator",
+   "value_field": "grand_total"
+  }
+ ],
+ "dashboard_name": "OEM Dashboard",
+ "doctype": "Dashboard",
+ "links": [
+  {
+   "link_count": 5,
+   "link_doctype": "OEM Customer",
+   "link_type": "Document Type",
+   "type": "Document Type"
+  },
+  {
+   "link_count": 5,
+   "link_doctype": "RFQ",
+   "link_type": "Document Type",
+   "type": "Document Type"
+  },
+  {
+   "link_count": 5,
+   "link_doctype": "Quotation",
+   "link_type": "Document Type",
+   "type": "Document Type"
+  },
+  {
+   "link_count": 5,
+   "link_doctype": "OEM Visit",
+   "link_type": "Document Type",
+   "type": "Document Type"
+  }
+ ],
+ "module": "Automotive CRM",
+ "name": "OEM Dashboard",
+ "owner": "Administrator",
+ "shortcuts": [
+  {
+   "link_to": "OEM Customer",
+   "type": "Document Type"
+  },
+  {
+   "link_to": "RFQ",
+   "type": "Document Type"
+  },
+  {
+   "link_to": "Quotation",
+   "type": "Document Type"
+  },
+  {
+   "link_to": "OEM Visit",
+   "type": "Document Type"
+  }
+ ]
+}

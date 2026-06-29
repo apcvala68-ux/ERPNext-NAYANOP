@@ -1,0 +1,145 @@
+# =============================================================================
+# Automotive CRM - Docker Compose (Local Development)
+# =============================================================================
+
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        FRAPPE_BRANCH: version-15
+        ERPNEXT_BRANCH: version-15
+        HRMS_BRANCH: version-15
+        CRM_BRANCH: main
+        APP_NAME: automotive_crm
+        APP_BRANCH: main
+        SITE_NAME: site1.localhost
+        DB_HOST: mariadb
+        DB_PORT: 3306
+        DB_PASSWORD: change-me
+        ADMIN_PASSWORD: admin
+    image: automotive-crm:latest
+    restart: unless-stopped
+    ports:
+      - "8080:8000"
+    depends_on:
+      - mariadb
+      - redis-cache
+      - redis-queue
+    environment:
+      - DB_HOST=mariadb
+      - DB_PORT=3306
+      - DB_PASSWORD=change-me
+      - REDIS_CACHE=redis-cache:6379
+      - REDIS_QUEUE=redis-queue:6379
+      - SITES=site1.localhost
+    volumes:
+      - sites:/home/frappe/frappe-bench/sites
+      - logs:/home/frappe/frappe-bench/logs
+      - apps:/home/frappe/frappe-bench/apps
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/method/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  mariadb:
+    image: mariadb:10.6
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=change-me
+      - MYSQL_DATABASE=site1_localhost
+      - MYSQL_USER=frappe
+      - MYSQL_PASSWORD=change-me
+    ports:
+      - "3307:3306"
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --skip-character-set-client-handshake
+      --skip-innodb-read-only-compressed
+      --innodb-buffer-pool-size=1G
+      --innodb-log-file-size=256M
+      --innodb-flush-method=O_DIRECT
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pchange-me"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis-cache:
+    image: redis:7.0-alpine
+    restart: unless-stopped
+    command: redis-server --maxmemory 512mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis-cache-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis-queue:
+    image: redis:7.0-alpine
+    restart: unless-stopped
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6381:6379"
+    volumes:
+      - redis-queue-data:/data
+
+  worker:
+    image: automotive-crm:latest
+    restart: unless-stopped
+    command: bench worker --queue short,default,long
+    depends_on:
+      - backend
+      - mariadb
+      - redis-cache
+      - redis-queue
+    environment:
+      - DB_HOST=mariadb
+      - DB_PORT=3306
+      - DB_PASSWORD=change-me
+      - REDIS_CACHE=redis-cache:6379
+      - REDIS_QUEUE=redis-queue:6379
+    volumes:
+      - sites:/home/frappe/frappe-bench/sites
+      - apps:/home/frappe/frappe-bench/apps
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+
+  scheduler:
+    image: automotive-crm:latest
+    restart: unless-stopped
+    command: bench schedule
+    depends_on:
+      - backend
+      - mariadb
+      - redis-cache
+    environment:
+      - DB_HOST=mariadb
+      - DB_PORT=3306
+      - DB_PASSWORD=change-me
+      - REDIS_CACHE=redis-cache:6379
+    volumes:
+      - sites:/home/frappe/frappe-bench/sites
+      - apps:/home/frappe/frappe-bench/apps
+
+volumes:
+  sites:
+  logs:
+  apps:
+  mariadb-data:
+  redis-cache-data:
+  redis-queue-data:

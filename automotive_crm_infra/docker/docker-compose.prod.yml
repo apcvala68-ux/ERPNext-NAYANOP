@@ -1,0 +1,164 @@
+# =============================================================================
+# Automotive CRM - Docker Compose (Production)
+# =============================================================================
+
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        FRAPPE_BRANCH: version-15
+        ERPNEXT_BRANCH: version-15
+        HRMS_BRANCH: version-15
+        CRM_BRANCH: main
+        APP_NAME: automotive_crm
+        APP_BRANCH: main
+        SITE_NAME: ${SITE_NAME:-site1.localhost}
+        DB_HOST: mariadb
+        DB_PORT: 3306
+        DB_PASSWORD: ${DB_PASSWORD}
+        ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+    image: ghcr.io/yourorg/automotive-crm:latest
+    restart: always
+    ports:
+      - "8080:8000"
+    depends_on:
+      - mariadb
+      - redis-cache
+      - redis-queue
+    environment:
+      - DB_HOST=mariadb
+      - DB_PORT=3306
+      - DB_PASSWORD=${DB_PASSWORD}
+      - REDIS_CACHE=redis-cache:6379
+      - REDIS_QUEUE=redis-queue:6379
+      - SITES=${SITES_RULE}
+    volumes:
+      - sites:/home/frappe/frappe-bench/sites
+      - logs:/home/frappe/frappe-bench/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/method/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+        reservations:
+          memory: 2G
+
+  mariadb:
+    image: mariadb:10.6
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${SITE_NAME}
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --skip-character-set-client-handshake
+      --skip-innodb-read-only-compressed
+      --innodb-buffer-pool-size=2G
+      --innodb-log-file-size=512M
+      --innodb-flush-method=O_DIRECT
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis-cache:
+    image: redis:7.0-alpine
+    restart: always
+    command: redis-server --maxmemory 1gb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-cache-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis-queue:
+    image: redis:7.0-alpine
+    restart: always
+    command: redis-server --maxmemory 512mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-queue-data:/data
+
+  worker:
+    image: ghcr.io/yourorg/automotive-crm:latest
+    restart: always
+    command: bench worker --queue short,default,long
+    depends_on:
+      - backend
+      - mariadb
+      - redis-cache
+      - redis-queue
+    environment:
+      - DB_HOST=mariadb
+      - DB_PORT=3306
+      - DB_PASSWORD=${DB_PASSWORD}
+      - REDIS_CACHE=redis-cache:6379
+      - REDIS_QUEUE=redis-queue:6379
+    volumes:
+      - sites:/home/frappe/frappe-bench/sites
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+
+  scheduler:
+    image: ghcr.io/yourorg/automotive-crm:latest
+    restart: always
+    command: bench schedule
+    depends_on:
+      - backend
+      - mariadb
+      - redis-cache
+    environment:
+      - DB_HOST=mariadb
+      - DB_PORT=3306
+      - DB_PASSWORD=${DB_PASSWORD}
+      - REDIS_CACHE=redis-cache:6379
+    volumes:
+      - sites:/home/frappe/frappe-bench/sites
+
+  proxy:
+    image: traefik:v2.10
+    restart: always
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.letsencrypt.acme.email=${ACME_EMAIL}"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - letsencrypt:/letsencrypt
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.erpnext.rule=Host(`${SITES_RULE}`)"
+      - "traefik.http.routers.erpnext.entrypoints=websecure"
+      - "traefik.http.routers.erpnext.tls.certresolver=letsencrypt"
+      - "traefik.http.services.erpnext.loadbalancer.server.port=8000"
+
+volumes:
+  sites:
+  logs:
+  mariadb-data:
+  redis-cache-data:
+  redis-queue-data:
+  letsencrypt:

@@ -1,0 +1,228 @@
+{
+ "actions": [],
+ "autoname": "naming_series:",
+ "creation": "2026-06-29 19:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "quality_complaint",
+  "oem_customer",
+  "section_team",
+  "team",
+  "section_problem",
+  "problem_description",
+  "containment_actions",
+  "section_root_cause",
+  "root_cause_analysis",
+  "root_cause",
+  "section_corrective",
+  "corrective_actions",
+  "section_preventive",
+  "preventive_actions",
+  "section_verification",
+  "verification_method",
+  "effectiveness_score",
+  "completion_date",
+  "section_status",
+  "status",
+  "approved_by",
+  "section_notes",
+  "notes",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Naming Series",
+   "options": "8D-.YYYY.-",
+   "reqd": 1
+  },
+  {
+   "fieldname": "quality_complaint",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Quality Complaint",
+   "options": "Quality Complaint",
+   "reqd": 1
+  },
+  {
+   "fieldname": "oem_customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "OEM Customer",
+   "options": "OEM Customer",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_team",
+   "fieldtype": "Section Break",
+   "label": "D1: Team"
+  },
+  {
+   "fieldname": "team",
+   "fieldtype": "Table",
+   "label": "Team Members",
+   "options": "8D Team Member"
+  },
+  {
+   "fieldname": "section_problem",
+   "fieldtype": "Section Break",
+   "label": "D2: Problem Description"
+  },
+  {
+   "fieldname": "problem_description",
+   "fieldtype": "Text Editor",
+   "label": "Problem Description",
+   "reqd": 1
+  },
+  {
+   "fieldname": "containment_actions",
+   "fieldtype": "Text Editor",
+   "label": "D3: Containment Actions"
+  },
+  {
+   "fieldname": "section_root_cause",
+   "fieldtype": "Section Break",
+   "label": "D4: Root Cause Analysis"
+  },
+  {
+   "fieldname": "root_cause_analysis",
+   "fieldtype": "Text Editor",
+   "label": "Root Cause Analysis"
+  },
+  {
+   "fieldname": "root_cause",
+   "fieldtype": "Small Text",
+   "label": "Root Cause"
+  },
+  {
+   "fieldname": "section_corrective",
+   "fieldtype": "Section Break",
+   "label": "D5: Corrective Actions"
+  },
+  {
+   "fieldname": "corrective_actions",
+   "fieldtype": "Table",
+   "label": "Corrective Actions",
+   "options": "8D Action"
+  },
+  {
+   "fieldname": "section_preventive",
+   "fieldtype": "Section Break",
+   "label": "D6: Preventive Actions"
+  },
+  {
+   "fieldname": "preventive_actions",
+   "fieldtype": "Table",
+   "label": "Preventive Actions",
+   "options": "8D Action"
+  },
+  {
+   "fieldname": "section_verification",
+   "fieldtype": "Section Break",
+   "label": "D7: Effectiveness Verification"
+  },
+  {
+   "fieldname": "verification_method",
+   "fieldtype": "Text Editor",
+   "label": "Verification Method"
+  },
+  {
+   "fieldname": "effectiveness_score",
+   "fieldtype": "Percent",
+   "in_list_view": 1,
+   "label": "Effectiveness Score"
+  },
+  {
+   "fieldname": "completion_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Completion Date"
+  },
+  {
+   "fieldname": "section_status",
+   "fieldtype": "Section Break",
+   "label": "D8: Team Recognition"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Open\nIn Progress\nCompleted\nVerified",
+   "reqd": 1
+  },
+  {
+   "fieldname": "approved_by",
+   "fieldtype": "Link",
+   "label": "Approved By",
+   "options": "User"
+  },
+  {
+   "fieldname": "section_notes",
+   "fieldtype": "Section Break",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Text Editor",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "8D Report",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-06-29 19:00:00.000000",
+ "module": "Automotive CRM",
+ "name": "8D Report",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales User",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "quality_complaint,oem_customer,status",
+ "sort_field": "modification",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

@@ -1,0 +1,231 @@
+{
+ "actions": [],
+ "autoname": "field:part_number",
+ "creation": "2026-06-29 19:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "part_number",
+  "description",
+  "section_general",
+  "category",
+  "material_type",
+  "dimension_length",
+  "dimension_width",
+  "dimension_height",
+  "dimension_unit",
+  "weight",
+  "weight_unit",
+  "section_manufacturing",
+  "manufacturing_process",
+  "cycle_time",
+  "cycle_time_unit",
+  "minimum_order_quantity",
+  "lead_time_days",
+  "section_tooling",
+  "tooling_required",
+  "tooling",
+  "section_quality",
+  "certification_required",
+  "inspection_level",
+  "section_notes",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "part_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Part Number",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Description",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_general",
+   "fieldtype": "Section Break",
+   "label": "General Information"
+  },
+  {
+   "fieldname": "category",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Category",
+   "options": "Metal\nRubber\nPlastic\nElectrical\nAssembly",
+   "reqd": 1
+  },
+  {
+   "fieldname": "material_type",
+   "fieldtype": "Data",
+   "label": "Material Type"
+  },
+  {
+   "fieldname": "dimension_length",
+   "fieldtype": "Float",
+   "label": "Length"
+  },
+  {
+   "fieldname": "dimension_width",
+   "fieldtype": "Float",
+   "label": "Width"
+  },
+  {
+   "fieldname": "dimension_height",
+   "fieldtype": "Float",
+   "label": "Height"
+  },
+  {
+   "fieldname": "dimension_unit",
+   "fieldtype": "Select",
+   "label": "Dimension Unit",
+   "options": "mm\ncm\nm\ninch"
+  },
+  {
+   "fieldname": "weight",
+   "fieldtype": "Float",
+   "label": "Weight"
+  },
+  {
+   "fieldname": "weight_unit",
+   "fieldtype": "Select",
+   "label": "Weight Unit",
+   "options": "kg\ngm\nlb"
+  },
+  {
+   "fieldname": "section_manufacturing",
+   "fieldtype": "Section Break",
+   "label": "Manufacturing"
+  },
+  {
+   "fieldname": "manufacturing_process",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Manufacturing Process",
+   "options": "Casting\nForging\nStamping\nMachining\nInjection Molding\nBlow Molding\nWelding\nAssembly\nOther"
+  },
+  {
+   "fieldname": "cycle_time",
+   "fieldtype": "Float",
+   "label": "Cycle Time"
+  },
+  {
+   "fieldname": "cycle_time_unit",
+   "fieldtype": "Select",
+   "label": "Cycle Time Unit",
+   "options": "seconds\nminutes\nhours"
+  },
+  {
+   "fieldname": "minimum_order_quantity",
+   "fieldtype": "Int",
+   "label": "Minimum Order Quantity"
+  },
+  {
+   "fieldname": "lead_time_days",
+   "fieldtype": "Int",
+   "label": "Lead Time (Days)"
+  },
+  {
+   "fieldname": "section_tooling",
+   "fieldtype": "Section Break",
+   "label": "Tooling"
+  },
+  {
+   "fieldname": "tooling_required",
+   "fieldtype": "Check",
+   "label": "Tooling Required"
+  },
+  {
+   "fieldname": "tooling",
+   "fieldtype": "Table",
+   "label": "Tooling",
+   "options": "Tooling"
+  },
+  {
+   "fieldname": "section_quality",
+   "fieldtype": "Section Break",
+   "label": "Quality"
+  },
+  {
+   "fieldname": "certification_required",
+   "fieldtype": "Check",
+   "label": "Certification Required"
+  },
+  {
+   "fieldname": "inspection_level",
+   "fieldtype": "Select",
+   "label": "Inspection Level",
+   "options": "Level 1\nLevel 2\nLevel 3\nLevel 4"
+  },
+  {
+   "fieldname": "section_notes",
+   "fieldtype": "Section Break",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Text Editor",
+   "label": "Notes"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [
+  {
+   "link_doctype": "RFQ Item",
+   "link_fieldname": "part_master"
+  },
+  {
+   "link_doctype": "Quotation Item",
+   "link_fieldname": "part_master"
+  },
+  {
+   "link_doctype": "Price List Part",
+   "link_fieldname": "part_master"
+  },
+  {
+   "link_doctype": "Sales Forecast",
+   "link_fieldname": "part_master"
+  }
+ ],
+ "modified": "2026-06-29 19:00:00.000000",
+ "module": "Automotive CRM",
+ "name": "Part Master",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "part_number,description,category",
+ "sort_field": "modification",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "description",
+ "track_changes": 1
+}

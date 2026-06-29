@@ -1,0 +1,80 @@
+{
+ "charts": [
+  {
+   "chart_name": "Complaints by Severity",
+   "chart_type": "Donut",
+   "doctype": "Quality Complaint",
+   "filters": [["docstatus", "=", "1"]],
+   "group_by": "severity",
+   "name": "complaints_by_severity",
+   "owner": "Administrator"
+  },
+  {
+   "chart_name": "Complaints by Type",
+   "chart_type": "Bar",
+   "doctype": "Quality Complaint",
+   "filters": [["docstatus", "=", "1"]],
+   "group_by": "complaint_type",
+   "name": "complaints_by_type",
+   "owner": "Administrator"
+  },
+  {
+   "chart_name": "8D Report Status",
+   "chart_type": "Pie",
+   "doctype": "8D Report",
+   "filters": [["docstatus", "=", "1"]],
+   "group_by": "status",
+   "name": "8d_report_status",
+   "owner": "Administrator"
+  }
+ ],
+ "dashboard_name": "Quality Dashboard",
+ "doctype": "Dashboard",
+ "links": [
+  {
+   "link_count": 5,
+   "link_doctype": "Quality Complaint",
+   "link_type": "Document Type",
+   "type": "Document Type"
+  },
+  {
+   "link_count": 5,
+   "link_doctype": "8D Report",
+   "link_type": "Document Type",
+   "type": "Document Type"
+  },
+  {
+   "link_count": 5,
+   "link_doctype": "PPAP",
+   "link_type": "Document Type",
+   "type": "Document Type"
+  },
+  {
+   "link_count": 5,
+   "link_doctype": "Tooling",
+   "link_type": "Document Type",
+   "type": "Document Type"
+  }
+ ],
+ "module": "Automotive CRM",
+ "name": "Quality Dashboard",
+ "owner": "Administrator",
+ "shortcuts": [
+  {
+    "link_to": "Quality Complaint",
+    "type": "Document Type"
+  },
+  {
+    "link_to": "8D Report",
+    "type": "Document Type"
+  },
+  {
+    "link_to": "PPAP",
+    "type": "Document Type"
+  },
+  {
+    "link_to": "Tooling",
+    "type": "Document Type"
+  }
+ ]
+}

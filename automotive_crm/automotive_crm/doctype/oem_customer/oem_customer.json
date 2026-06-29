@@ -1,0 +1,306 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:oem_code",
+ "creation": "2026-06-29 19:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "oem_code",
+  "customer_name",
+  "section_general",
+  "tier",
+  "country",
+  "website",
+  "section_contact",
+  "primary_contact",
+  "email",
+  "phone",
+  "section_address",
+  "address",
+  "city",
+  "state",
+  "pincode",
+  "section_certification",
+  "certification",
+  "certification_expiry",
+  "certification_body",
+  "section_business",
+  "annual_revenue",
+  "employee_count",
+  "established_year",
+  "section_notes",
+  "notes",
+  "section Plants",
+  "plants",
+  "section_agreements",
+  "customer_agreements",
+  "sb_sec_1",
+  "forecast_accuracy",
+  "section_statistics",
+  "total_deals",
+  "total_rfqs",
+  "total_quotations"
+ ],
+ "fields": [
+  {
+   "fieldname": "oem_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "OEM Code",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Customer Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_general",
+   "fieldtype": "Section Break",
+   "label": "General Information"
+  },
+  {
+   "fieldname": "tier",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Tier",
+   "options": "Tier 1\nTier 2\nTier 3\nTier 4",
+   "reqd": 1
+  },
+  {
+   "fieldname": "country",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Country",
+   "options": "Country",
+   "reqd": 1
+  },
+  {
+   "fieldname": "website",
+   "fieldtype": "Data",
+   "label": "Website",
+   "options": "URL"
+  },
+  {
+   "fieldname": "section_contact",
+   "fieldtype": "Section Break",
+   "label": "Contact Information"
+  },
+  {
+   "fieldname": "primary_contact",
+   "fieldtype": "Link",
+   "label": "Primary Contact",
+   "options": "Contact"
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Email",
+   "options": "Email"
+  },
+  {
+   "fieldname": "phone",
+   "fieldtype": "Data",
+   "label": "Phone",
+   "options": "Phone"
+  },
+  {
+   "fieldname": "section_address",
+   "fieldtype": "Section Break",
+   "label": "Address"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Small Text",
+   "label": "Address"
+  },
+  {
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "label": "City"
+  },
+  {
+   "fieldname": "state",
+   "fieldtype": "Data",
+   "label": "State"
+  },
+  {
+   "fieldname": "pincode",
+   "fieldtype": "Data",
+   "label": "Pincode"
+  },
+  {
+   "fieldname": "section_certification",
+   "fieldtype": "Section Break",
+   "label": "Certification"
+  },
+  {
+   "fieldname": "certification",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Certification",
+   "options": "ISO 9001\nISO 14001\nIATF 16949\nISO 45001\nTS 16949\nOther"
+  },
+  {
+   "fieldname": "certification_expiry",
+   "fieldtype": "Date",
+   "label": "Certification Expiry"
+  },
+  {
+   "fieldname": "certification_body",
+   "fieldtype": "Data",
+   "label": "Certification Body"
+  },
+  {
+   "fieldname": "section_business",
+   "fieldtype": "Section Break",
+   "label": "Business Information"
+  },
+  {
+   "fieldname": "annual_revenue",
+   "fieldtype": "Currency",
+   "label": "Annual Revenue",
+   "options": "INR"
+  },
+  {
+   "fieldname": "employee_count",
+   "fieldtype": "Int",
+   "label": "Employee Count"
+  },
+  {
+   "fieldname": "established_year",
+   "fieldtype": "Int",
+   "label": "Established Year"
+  },
+  {
+   "fieldname": "section_notes",
+   "fieldtype": "Section Break",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Text Editor",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "section Plants",
+   "fieldtype": "Section Break",
+   "label": "Plants"
+  },
+  {
+   "fieldname": "plants",
+   "fieldtype": "Table",
+   "label": "Plants",
+   "options": "OEM Plant"
+  },
+  {
+   "fieldname": "section_agreements",
+   "fieldtype": "Section Break",
+   "label": "Agreements"
+  },
+  {
+   "fieldname": "customer_agreements",
+   "fieldtype": "Table",
+   "label": "Customer Agreements",
+   "options": "Customer Agreement"
+  },
+  {
+   "fieldname": "sb_sec_1",
+   "fieldtype": "Section Break",
+   "label": "Statistics"
+  },
+  {
+   "fieldname": "forecast_accuracy",
+   "fieldtype": "Percent",
+   "label": "Forecast Accuracy",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_statistics",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Statistics"
+  },
+  {
+   "fieldname": "total_deals",
+   "fieldtype": "Int",
+   "label": "Total Deals",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_rfqs",
+   "fieldtype": "Int",
+   "label": "Total RFQs",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_quotations",
+   "fieldtype": "Int",
+   "label": "Total Quotations",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [
+  {
+   "link_doctype": "RFQ",
+   "link_fieldname": "oem_customer"
+  },
+  {
+   "link_doctype": "Quotation",
+   "link_fieldname": "oem_customer"
+  },
+  {
+   "link_doctype": "Sales Forecast",
+   "link_fieldname": "oem_customer"
+  },
+  {
+   "link_doctype": "OEM Visit",
+   "link_fieldname": "oem_customer"
+  },
+  {
+   "link_doctype": "Quality Complaint",
+   "link_fieldname": "oem_customer"
+  }
+ ],
+ "modified": "2026-06-29 19:00:00.000000",
+ "module": "Automotive CRM",
+ "name": "OEM Customer",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modification",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "customer_name",
+ "track_changes": 1
+}

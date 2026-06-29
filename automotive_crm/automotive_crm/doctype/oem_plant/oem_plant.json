@@ -1,0 +1,177 @@
+{
+ "actions": [],
+ "autoname": "field:plant_code",
+ "creation": "2026-06-29 19:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "oem_customer",
+  "plant_code",
+  "plant_name",
+  "section_address",
+  "address",
+  "city",
+  "state",
+  "country",
+  "pincode",
+  "section_contact",
+  "plant_manager",
+  "email",
+  "phone",
+  "section_capacity",
+  "annual_capacity",
+  "shift_count",
+  "employee_count",
+  "section_notes",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "oem_customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "OEM Customer",
+   "options": "OEM Customer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "plant_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Plant Code",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "plant_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Plant Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_address",
+   "fieldtype": "Section Break",
+   "label": "Address"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Small Text",
+   "label": "Address"
+  },
+  {
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "City"
+  },
+  {
+   "fieldname": "state",
+   "fieldtype": "Data",
+   "label": "State"
+  },
+  {
+   "fieldname": "country",
+   "fieldtype": "Link",
+   "label": "Country",
+   "options": "Country"
+  },
+  {
+   "fieldname": "pincode",
+   "fieldtype": "Data",
+   "label": "Pincode"
+  },
+  {
+   "fieldname": "section_contact",
+   "fieldtype": "Section Break",
+   "label": "Contact Information"
+  },
+  {
+   "fieldname": "plant_manager",
+   "fieldtype": "Data",
+   "label": "Plant Manager"
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email",
+   "options": "Email"
+  },
+  {
+   "fieldname": "phone",
+   "fieldtype": "Data",
+   "label": "Phone",
+   "options": "Phone"
+  },
+  {
+   "fieldname": "section_capacity",
+   "fieldtype": "Section Break",
+   "label": "Capacity"
+  },
+  {
+   "fieldname": "annual_capacity",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Annual Capacity (Units)"
+  },
+  {
+   "fieldname": "shift_count",
+   "fieldtype": "Int",
+   "label": "Shift Count"
+  },
+  {
+   "fieldname": "employee_count",
+   "fieldtype": "Int",
+   "label": "Employee Count"
+  },
+  {
+   "fieldname": "section_notes",
+   "fieldtype": "Section Break",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Text Editor",
+   "label": "Notes"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-29 19:00:00.000000",
+ "module": "Automotive CRM",
+ "name": "OEM Plant",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "parentfield": "plants",
+ "parenttype": "OEM Customer",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modification",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "plant_name",
+ "track_changes": 1
+}

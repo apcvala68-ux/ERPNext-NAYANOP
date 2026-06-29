@@ -1,0 +1,78 @@
+{
+ "actions": [],
+ "creation": "2026-06-29 19:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "part_master",
+  "part_number",
+  "description",
+  "quantity",
+  "required_date",
+  "estimated_cost",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "part_master",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Part Master",
+   "options": "Part Master",
+   "reqd": 1
+  },
+  {
+   "fieldname": "part_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Part Number",
+   "read_only": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Description",
+   "read_only": 1
+  },
+  {
+   "fieldname": "quantity",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Quantity",
+   "reqd": 1
+  },
+  {
+   "fieldname": "required_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Required Date"
+  },
+  {
+   "fieldname": "estimated_cost",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Estimated Cost",
+   "options": "INR"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-29 19:00:00.000000",
+ "module": "Automotive CRM",
+ "name": "RFQ Item",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "parentfield": "items",
+ "parenttype": "RFQ",
+ "permissions": [],
+ "sort_field": "modification",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

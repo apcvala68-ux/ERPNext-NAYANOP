@@ -1,0 +1,83 @@
+{
+ "charts": [
+  {
+   "chart_name": "RFQ by Month",
+   "chart_type": "Line",
+   "doctype": "RFQ",
+   "filters": [["docstatus", "=", "1"]],
+   "group_by": "MONTH(rfq_date)",
+   "name": "rfq_by_month",
+   "owner": "Administrator",
+   "time_interval": "Monthly"
+  },
+  {
+   "chart_name": "Quotation Conversion",
+   "chart_type": "Bar",
+   "doctype": "Quotation",
+   "filters": [["docstatus", "=", "1"]],
+   "group_by": "status",
+   "name": "quotation_conversion",
+   "owner": "Administrator"
+  },
+  {
+   "chart_name": "Revenue Trend",
+   "chart_type": "Line",
+   "doctype": "Quotation",
+   "filters": [["docstatus", "=", "1"], ["status", "=", "Accepted"]],
+   "group_by": "MONTH(quotation_date)",
+   "name": "revenue_trend",
+   "owner": "Administrator",
+   "time_interval": "Monthly",
+   "value_field": "grand_total"
+  }
+ ],
+ "dashboard_name": "Sales Dashboard",
+ "doctype": "Dashboard",
+ "links": [
+  {
+   "link_count": 5,
+   "link_doctype": "RFQ",
+   "link_type": "Document Type",
+   "type": "Document Type"
+  },
+  {
+   "link_count": 5,
+   "link_doctype": "Quotation",
+   "link_type": "Document Type",
+   "type": "Document Type"
+  },
+  {
+   "link_count": 5,
+   "link_doctype": "Cost Sheet",
+   "link_type": "Document Type",
+   "type": "Document Type"
+  },
+  {
+   "link_count": 5,
+   "link_doctype": "Sales Forecast",
+   "link_type": "Document Type",
+   "type": "Document Type"
+  }
+ ],
+ "module": "Automotive CRM",
+ "name": "Sales Dashboard",
+ "owner": "Administrator",
+ "shortcuts": [
+  {
+    "link_to": "RFQ",
+    "type": "Document Type"
+  },
+  {
+    "link_to": "Quotation",
+    "type": "Document Type"
+  },
+  {
+    "link_to": "Cost Sheet",
+    "type": "Document Type"
+  },
+  {
+    "link_to": "Sales Forecast",
+    "type": "Document Type"
+  }
+ ]
+}

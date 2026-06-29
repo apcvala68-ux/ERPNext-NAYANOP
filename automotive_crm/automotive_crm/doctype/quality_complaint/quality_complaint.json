@@ -1,0 +1,216 @@
+{
+ "actions": [],
+ "autoname": "naming_series:",
+ "creation": "2026-06-29 19:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "oem_customer",
+  "part_master",
+  "section_complaint",
+  "complaint_date",
+  "complaint_type",
+  "severity",
+  "status",
+  "description",
+  "section_details",
+  "quantity_affected",
+  "batch_number",
+  "plant_location",
+  "section_action",
+  "assigned_to",
+  "due_date",
+  "section_8d",
+  "eight_d_report",
+  "section_notes",
+  "notes",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Naming Series",
+   "options": "QC-.YYYY.-",
+   "reqd": 1
+  },
+  {
+   "fieldname": "oem_customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "OEM Customer",
+   "options": "OEM Customer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "part_master",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Part Master",
+   "options": "Part Master"
+  },
+  {
+   "fieldname": "section_complaint",
+   "fieldtype": "Section Break",
+   "label": "Complaint Details"
+  },
+  {
+   "fieldname": "complaint_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Complaint Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "complaint_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Complaint Type",
+   "options": "Dimensional\nVisual\nFunctional\nMaterial\nPackaging\nOther",
+   "reqd": 1
+  },
+  {
+   "fieldname": "severity",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Severity",
+   "options": "Critical\nMajor\nMinor",
+   "reqd": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Open\nIn Progress\nResolved\nClosed",
+   "reqd": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Text Editor",
+   "label": "Description",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_details",
+   "fieldtype": "Section Break",
+   "label": "Affected Details"
+  },
+  {
+   "fieldname": "quantity_affected",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Quantity Affected"
+  },
+  {
+   "fieldname": "batch_number",
+   "fieldtype": "Data",
+   "label": "Batch Number"
+  },
+  {
+   "fieldname": "plant_location",
+   "fieldtype": "Data",
+   "label": "Plant Location"
+  },
+  {
+   "fieldname": "section_action",
+   "fieldtype": "Section Break",
+   "label": "Action Required"
+  },
+  {
+   "fieldname": "assigned_to",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Assigned To",
+   "options": "User"
+  },
+  {
+   "fieldname": "due_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Due Date"
+  },
+  {
+   "fieldname": "section_8d",
+   "fieldtype": "Section Break",
+   "label": "8D Report"
+  },
+  {
+   "fieldname": "eight_d_report",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "8D Report",
+   "options": "8D Report"
+  },
+  {
+   "fieldname": "section_notes",
+   "fieldtype": "Section Break",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Text Editor",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Quality Complaint",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [
+  {
+   "link_doctype": "8D Report",
+   "link_fieldname": "quality_complaint"
+  }
+ ],
+ "modified": "2026-06-29 19:00:00.000000",
+ "module": "Automotive CRM",
+ "name": "Quality Complaint",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales User",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "oem_customer,part_master,status,severity",
+ "sort_field": "modification",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

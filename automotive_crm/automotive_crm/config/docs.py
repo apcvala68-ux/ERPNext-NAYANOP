@@ -1,0 +1,15 @@
+from frappe import _
+
+
+def get_data():
+    return [
+        {
+            "module_name": "Automotive CRM",
+            "category": "Modules",
+            "color": "#0089FF",
+            "icon": "octicon octicon-package",
+            "type": "module",
+            "label": _("Automotive CRM"),
+            "description": _("Enterprise-grade CRM for automotive parts manufacturers"),
+        }
+    ]

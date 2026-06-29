@@ -1,0 +1,170 @@
+{
+ "actions": [],
+ "autoname": "field:tooling_code",
+ "creation": "2026-06-29 19:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "tooling_code",
+  "tooling_name",
+  "section_general",
+  "tooling_type",
+  "status",
+  "supplier",
+  "section_dates",
+  "manufacture_date",
+  "commission_date",
+  "warranty_expiry",
+  "section_capacity",
+  "expected_cavity_count",
+  "current_shot_count",
+  "max_shot_count",
+  "section_cost",
+  "tooling_cost",
+  "maintenance_cost_per_year",
+  "section_notes",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "tooling_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Tooling Code",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "tooling_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Tooling Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_general",
+   "fieldtype": "Section Break",
+   "label": "General Information"
+  },
+  {
+   "fieldname": "tooling_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Tooling Type",
+   "options": "Die\nMold\nFixture\nGauge\nJig\nOther",
+   "reqd": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Active\nInactive\nUnder Maintenance\nRetired",
+   "reqd": 1
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Supplier",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "section_dates",
+   "fieldtype": "Section Break",
+   "label": "Dates"
+  },
+  {
+   "fieldname": "manufacture_date",
+   "fieldtype": "Date",
+   "label": "Manufacture Date"
+  },
+  {
+   "fieldname": "commission_date",
+   "fieldtype": "Date",
+   "label": "Commission Date"
+  },
+  {
+   "fieldname": "warranty_expiry",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Warranty Expiry"
+  },
+  {
+   "fieldname": "section_capacity",
+   "fieldtype": "Section Break",
+   "label": "Capacity"
+  },
+  {
+   "fieldname": "expected_cavity_count",
+   "fieldtype": "Int",
+   "label": "Expected Cavity Count"
+  },
+  {
+   "fieldname": "current_shot_count",
+   "fieldtype": "Int",
+   "label": "Current Shot Count"
+  },
+  {
+   "fieldname": "max_shot_count",
+   "fieldtype": "Int",
+   "label": "Max Shot Count"
+  },
+  {
+   "fieldname": "section_cost",
+   "fieldtype": "Section Break",
+   "label": "Cost"
+  },
+  {
+   "fieldname": "tooling_cost",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Tooling Cost",
+   "options": "INR"
+  },
+  {
+   "fieldname": "maintenance_cost_per_year",
+   "fieldtype": "Currency",
+   "label": "Maintenance Cost/Year",
+   "options": "INR"
+  },
+  {
+   "fieldname": "section_notes",
+   "fieldtype": "Section Break",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Text Editor",
+   "label": "Notes"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-29 19:00:00.000000",
+ "module": "Automotive CRM",
+ "name": "Tooling",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "parentfield": "tooling",
+ "parenttype": "Part Master",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "tooling_code,tooling_name,tooling_type",
+ "sort_field": "modification",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "tooling_name",
+ "track_changes": 1
+}

@@ -1,0 +1,9 @@
+{
+    "automotive_crm": {
+        "color": "#0089FF",
+        "icon": "octicon octicon-package",
+        "type": "module",
+        "label": "Automotive CRM",
+        "description": "Enterprise-grade CRM for automotive parts manufacturers"
+    }
+}

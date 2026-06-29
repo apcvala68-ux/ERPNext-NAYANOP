@@ -1,0 +1,258 @@
+# Monitoring Configuration
+
+## Health Checks
+
+```yaml
+healthchecks:
+  - name: "API Response Time"
+    endpoint: "/api/method/ping"
+    interval: 60
+    timeout: 10
+    alert_threshold: 5000  # ms
+    
+  - name: "Database Connection"
+    type: "mysql"
+    host: "mariadb"
+    port: 3306
+    interval: 120
+    
+  - name: "Redis Connection"
+    type: "redis"
+    host: "redis-cache"
+    port: 6379
+    interval: 60
+    
+  - name: "Disk Usage"
+    type: "disk"
+    threshold: 80  # percent
+    interval: 300
+```
+
+## Alert Rules
+
+```yaml
+alerts:
+  - name: "High Error Rate"
+    condition: "rate(http_requests_total{status=~'5..'}[5m]) > 0.1"
+    severity: "critical"
+    notify: ["slack", "email"]
+    
+  - name: "High Response Time"
+    condition: "histogram_quantile(0.95, http_request_duration_seconds) > 2"
+    severity: "warning"
+    notify: ["slack"]
+    
+  - name: "Database Connection Pool Exhausted"
+    condition: "db_connections_active > 80"
+    severity: "critical"
+    notify: ["slack", "email", "pager"]
+    
+  - name: "Low Disk Space"
+    condition: "disk_usage_percent > 85"
+    severity: "warning"
+    notify: ["slack", "email"]
+```
+
+## Dashboard Metrics
+
+### System Metrics
+
+| Metric | Description | Unit |
+|--------|-------------|------|
+| CPU Usage | CPU utilization percentage | % |
+| Memory Usage | Memory utilization percentage | % |
+| Disk Usage | Disk utilization percentage | % |
+| Network I/O | Network input/output | bytes/sec |
+
+### Application Metrics
+
+| Metric | Description | Unit |
+|--------|-------------|------|
+| Request Rate | Requests per second | req/s |
+| Response Time | Average response time | ms |
+| Error Rate | Errors per second | err/s |
+| Active Users | Currently active users | count |
+
+### Database Metrics
+
+| Metric | Description | Unit |
+|--------|-------------|------|
+| Connections | Active database connections | count |
+| Query Rate | Queries per second | qps |
+| Slow Queries | Queries taking > 1s | count |
+| Replication Lag | Slave replication lag | seconds |
+
+### Redis Metrics
+
+| Metric | Description | Unit |
+|--------|-------------|------|
+| Hit Rate | Cache hit rate | % |
+| Memory Usage | Redis memory usage | bytes |
+| Connected Clients | Connected clients | count |
+| Commands/sec | Commands per second | cmd/s |
+
+## Monitoring Tools
+
+### Prometheus
+
+```yaml
+# prometheus.yml
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'automotive-crm'
+    static_configs:
+      - targets: ['backend:8000']
+    metrics_path: '/metrics'
+```
+
+### Grafana Dashboard
+
+```json
+{
+  "dashboard": {
+    "title": "Automotive CRM",
+    "panels": [
+      {
+        "title": "Request Rate",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(http_requests_total[5m])",
+            "legendFormat": "{{method}} {{status}}"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+## Alerting
+
+### Slack Integration
+
+```yaml
+# slack-config.yml
+slack:
+  webhook_url: "https://hooks.slack.com/services/XXX/YYY/ZZZ"
+  channel: "#alerts"
+  username: "Automotive CRM Bot"
+```
+
+### Email Integration
+
+```yaml
+# email-config.yml
+email:
+  smtp_host: "smtp.gmail.com"
+  smtp_port: 587
+  smtp_user: "alerts@yourorg.com"
+  smtp_password: "your-app-password"
+  from_address: "alerts@yourorg.com"
+```
+
+## Log Management
+
+### Log Rotation
+
+```bash
+# /etc/logrotate.d/automotive-crm
+/home/frappe/frappe-bench/logs/*.log {
+    daily
+    missingok
+    rotate 14
+    compress
+    delaycompress
+    notifempty
+    create 0640 frappe frappe
+    sharedscripts
+    postrotate
+        supervisorctl restart frappe-bench-worker:frappe-bench-short-worker
+        supervisorctl restart frappe-bench-worker:frappe-bench-default-worker
+        supervisorctl restart frappe-bench-worker:frappe-bench-long-worker
+    endscript
+}
+```
+
+### Centralized Logging
+
+```yaml
+# filebeat.yml
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /home/frappe/frappe-bench/logs/*.log
+    fields:
+      service: automotive-crm
+    fields_under_root: true
+
+output.elasticsearch:
+  hosts: ["elasticsearch:9200"]
+  index: "automotive-crm-%{+yyyy.MM.dd}"
+```
+
+## Performance Monitoring
+
+### Benchmarking
+
+```bash
+# Run benchmark
+docker-compose exec backend bench benchmark --site site1.localhost
+
+# Load test
+ab -n 1000 -c 10 https://yourdomain.com/api/method/ping
+```
+
+### Profiling
+
+```python
+# Profile a function
+from frappe.utils.profiler import profile
+
+@profile
+def expensive_function():
+    # Code to profile
+    pass
+```
+
+## Status Page
+
+### Uptime Monitoring
+
+```yaml
+# uptime-config.yml
+checks:
+  - name: "Automotive CRM"
+    url: "https://yourdomain.com/api/method/ping"
+    interval: 60
+    timeout: 10
+    expected_status: 200
+    expected_body: "pong"
+```
+
+### Status Page Template
+
+```html
+<!-- status-page.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Automotive CRM Status</title>
+</head>
+<body>
+    <h1>Automotive CRM Status</h1>
+    <div id="status">
+        <h2>All Systems Operational</h2>
+        <ul>
+            <li>✅ API: Operational</li>
+            <li>✅ Database: Operational</li>
+            <li>✅ Cache: Operational</li>
+        </ul>
+    </div>
+</body>
+</html>
+```

@@ -1,0 +1,16 @@
+{
+ "colwidths": {"OEM Customer": 200, "Total Quotations": 100, "Accepted": 80, "Rejected": 80, "Revenue": 120},
+ "columns": [
+  {"fieldname": "oem_customer", "fieldtype": "Link", "in_list_view": 1, "label": "OEM Customer", "options": "OEM Customer"},
+  {"fieldname": "total_quotations", "fieldtype": "Int", "in_list_view": 1, "label": "Total Quotations"},
+  {"fieldname": "accepted", "fieldtype": "Int", "in_list_view": 1, "label": "Accepted"},
+  {"fieldname": "rejected", "fieldtype": "Int", "in_list_view": 1, "label": "Rejected"},
+  {"fieldname": "revenue", "fieldtype": "Currency", "in_list_view": 1, "label": "Revenue", "options": "INR"}
+ ],
+ "filters": [
+  {"fieldname": "from_date", "fieldtype": "Date", "label": "From Date"},
+  {"fieldname": "to_date", "fieldtype": "Date", "label": "To Date"}
+ ],
+ "name": "Revenue by OEM",
+ "type": "Report"
+}

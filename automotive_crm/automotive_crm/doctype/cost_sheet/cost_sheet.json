@@ -1,0 +1,224 @@
+{
+ "actions": [],
+ "autoname": "naming_series:",
+ "creation": "2026-06-29 19:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "rfq",
+  "oem_customer",
+  "section_costs",
+  "material_cost",
+  "labor_cost",
+  "overhead_cost",
+  "tooling_cost",
+  "quality_cost",
+  "packaging_cost",
+  "logistics_cost",
+  "section_totals",
+  "total_cost",
+  "cost_per_unit",
+  "section_pricing",
+  "margin_percentage",
+  "selling_price",
+  "section_notes",
+  "notes",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Naming Series",
+   "options": "COST-.YYYY.-",
+   "reqd": 1
+  },
+  {
+   "fieldname": "rfq",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "RFQ",
+   "options": "RFQ",
+   "reqd": 1
+  },
+  {
+   "fieldname": "oem_customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "OEM Customer",
+   "options": "OEM Customer",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_costs",
+   "fieldtype": "Section Break",
+   "label": "Cost Breakdown"
+  },
+  {
+   "fieldname": "material_cost",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Material Cost",
+   "options": "INR",
+   "reqd": 1
+  },
+  {
+   "fieldname": "labor_cost",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Labor Cost",
+   "options": "INR",
+   "reqd": 1
+  },
+  {
+   "fieldname": "overhead_cost",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Overhead Cost",
+   "options": "INR",
+   "reqd": 1
+  },
+  {
+   "fieldname": "tooling_cost",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Tooling Cost",
+   "options": "INR"
+  },
+  {
+   "fieldname": "quality_cost",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Quality Cost",
+   "options": "INR"
+  },
+  {
+   "fieldname": "packaging_cost",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Packaging Cost",
+   "options": "INR"
+  },
+  {
+   "fieldname": "logistics_cost",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Logistics Cost",
+   "options": "INR"
+  },
+  {
+   "fieldname": "section_totals",
+   "fieldtype": "Section Break",
+   "label": "Totals"
+  },
+  {
+   "fieldname": "total_cost",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Total Cost",
+   "options": "INR",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cost_per_unit",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Cost Per Unit",
+   "options": "INR",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_pricing",
+   "fieldtype": "Section Break",
+   "label": "Pricing"
+  },
+  {
+   "fieldname": "margin_percentage",
+   "fieldtype": "Percent",
+   "in_list_view": 1,
+   "label": "Margin %"
+  },
+  {
+   "fieldname": "selling_price",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Selling Price",
+   "options": "INR",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_notes",
+   "fieldtype": "Section Break",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Text Editor",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Cost Sheet",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [
+  {
+   "link_doctype": "RFQ",
+   "link_fieldname": "cost_sheet"
+  },
+  {
+   "link_doctype": "Quotation",
+   "link_fieldname": "cost_sheet"
+  }
+ ],
+ "modified": "2026-06-29 19:00:00.000000",
+ "module": "Automotive CRM",
+ "name": "Cost Sheet",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales User",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "rfq,oem_customer",
+ "sort_field": "modification",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

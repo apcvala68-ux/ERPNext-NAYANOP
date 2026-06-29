@@ -1,0 +1,18 @@
+{
+ "colwidths": {"RFQ": 120, "OEM Customer": 200, "Material Cost": 120, "Labor Cost": 120, "Overhead Cost": 120, "Total Cost": 120},
+ "columns": [
+  {"fieldname": "rfq", "fieldtype": "Link", "in_list_view": 1, "label": "RFQ", "options": "RFQ"},
+  {"fieldname": "oem_customer", "fieldtype": "Link", "in_list_view": 1, "label": "OEM Customer", "options": "OEM Customer"},
+  {"fieldname": "material_cost", "fieldtype": "Currency", "in_list_view": 1, "label": "Material Cost", "options": "INR"},
+  {"fieldname": "labor_cost", "fieldtype": "Currency", "in_list_view": 1, "label": "Labor Cost", "options": "INR"},
+  {"fieldname": "overhead_cost", "fieldtype": "Currency", "in_list_view": 1, "label": "Overhead Cost", "options": "INR"},
+  {"fieldname": "total_cost", "fieldtype": "Currency", "in_list_view": 1, "label": "Total Cost", "options": "INR"}
+ ],
+ "filters": [
+  {"fieldname": "oem_customer", "fieldtype": "Link", "label": "OEM Customer", "options": "OEM Customer"},
+  {"fieldname": "from_date", "fieldtype": "Date", "label": "From Date"},
+  {"fieldname": "to_date", "fieldtype": "Date", "label": "To Date"}
+ ],
+ "name": "Cost Analysis",
+ "type": "Report"
+}
