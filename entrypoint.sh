@@ -3,7 +3,7 @@ set -e
 
 echo "=== Starting All-in-One Automotive CRM ==="
 
-# Start MariaDB
+# Start MariaDB (runs as root, drops to mysql user)
 echo "[1/4] Starting MariaDB..."
 mysqld_safe --datadir=/var/lib/mysql &
 sleep 3
@@ -24,34 +24,31 @@ mysql -u root -e "CREATE USER IF NOT EXISTS 'frappe'@'localhost' IDENTIFIED BY '
 mysql -u root -e "GRANT ALL PRIVILEGES ON automotive_crm.* TO 'frappe'@'localhost';" 2>/dev/null || true
 mysql -u root -e "FLUSH PRIVILEGES;" 2>/dev/null || true
 
-# Start Redis
+# Start Redis (runs as root)
 echo "[3/4] Starting Redis..."
 redis-server --daemonize yes --port 11000 --loglevel warning
 redis-server --daemonize yes --port 13000 --loglevel warning
 sleep 1
 
-# Create site if not exists
+# Create site if not exists (runs as frappe user)
 SITE_NAME="${SITE_NAME:-localhost}"
+cd /home/frappe/frappe-bench
 if [ ! -f "sites/${SITE_NAME}/site_config.json" ]; then
     echo "[4/4] Creating site: ${SITE_NAME}..."
-    yes "" | bench new-site "${SITE_NAME}" \
-        --mariadb-root-password root \
-        --admin-password "${ADMIN_PASSWORD:-admin}" \
-        --no-mariadb-socket \
-        --force
+    su - frappe -c "cd /home/frappe/frappe-bench && yes '' | bench new-site '${SITE_NAME}' --mariadb-root-password root --admin-password '${ADMIN_PASSWORD:-admin}' --no-mariadb-socket --force"
 
     echo "Installing apps..."
-    bench --site "${SITE_NAME}" install-app erpnext
-    bench --site "${SITE_NAME}" install-app hrms
-    bench --site "${SITE_NAME}" install-app automotive_crm
+    su - frappe -c "cd /home/frappe/frappe-bench && bench --site '${SITE_NAME}' install-app erpnext"
+    su - frappe -c "cd /home/frappe/frappe-bench && bench --site '${SITE_NAME}' install-app hrms"
+    su - frappe -c "cd /home/frappe/frappe-bench && bench --site '${SITE_NAME}' install-app automotive_crm"
 
-    bench config -g set default_site "${SITE_NAME}"
-    bench build --app automotive_crm || true
-    bench --site "${SITE_NAME}" clear-cache || true
+    su - frappe -c "cd /home/frappe/frappe-bench && bench config -g set default_site '${SITE_NAME}'"
+    su - frappe -c "cd /home/frappe/frappe-bench && bench build --app automotive_crm" || true
+    su - frappe -c "cd /home/frappe/frappe-bench && bench --site '${SITE_NAME}' clear-cache" || true
 else
     echo "[4/4] Site ${SITE_NAME} exists. Running migrations..."
-    bench --site "${SITE_NAME}" migrate || true
-    bench --site "${SITE_NAME}" clear-cache || true
+    su - frappe -c "cd /home/frappe/frappe-bench && bench --site '${SITE_NAME}' migrate" || true
+    su - frappe -c "cd /home/frappe/frappe-bench && bench --site '${SITE_NAME}' clear-cache" || true
 fi
 
 echo "=== All services started ==="
@@ -59,5 +56,5 @@ echo "App: http://localhost:8000"
 echo "Login: Administrator / ${ADMIN_PASSWORD:-admin}"
 echo ""
 
-# Start Frappe
-exec bench start
+# Start Frappe (as frappe user)
+exec su - frappe -c "cd /home/frappe/frappe-bench && bench start"
