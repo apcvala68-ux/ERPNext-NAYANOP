@@ -34,8 +34,8 @@ RUN apt-get update && apt-get install -y \
 RUN mkdir -p /run/mysqld && chown mysql:mysql /run/mysqld \
     && useradd -m -s /bin/bash frappe
 
-# Install frappe-bench
-RUN pip3 install frappe-bench
+# Install frappe-bench + yarn
+RUN pip3 install frappe-bench && npm install -g yarn
 
 # Switch to frappe user, let bench init create the directory
 USER frappe
