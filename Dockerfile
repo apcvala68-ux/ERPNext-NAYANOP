@@ -7,10 +7,10 @@ ENV PYTHONUNBUFFERED=1
 ENV PATH="/usr/local/nodejs/bin:${PATH}"
 
 # Install Node.js 20 directly (Ubuntu 22.04 ships 12.x, frappe needs >=18)
-RUN curl -fsSL https://nodejs.org/dist/v20.18.1/node-v20.18.1-linux-x64.tar.xz -o /tmp/node.tar.xz \
+RUN curl -fsSL https://nodejs.org/dist/v20.18.1/node-v20.18.1-linux-x64.tar.gz -o /tmp/node.tar.gz \
     && mkdir -p /usr/local/nodejs \
-    && tar -xJf /tmp/node.tar.xz -C /usr/local/nodejs --strip-components=1 \
-    && rm /tmp/node.tar.xz \
+    && tar -xzf /tmp/node.tar.gz -C /usr/local/nodejs --strip-components=1 \
+    && rm /tmp/node.tar.gz \
     && ln -sf /usr/local/nodejs/bin/node /usr/local/bin/node \
     && ln -sf /usr/local/nodejs/bin/npm /usr/local/bin/npm \
     && ln -sf /usr/local/nodejs/bin/npx /usr/local/bin/npx
