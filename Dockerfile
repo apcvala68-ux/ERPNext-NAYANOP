@@ -4,18 +4,23 @@ FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
+ENV PATH="/usr/local/nodejs/bin:${PATH}"
 
-# Install Node.js 18 from NodeSource (ubuntu 22.04 ships 12.x, frappe needs >=18)
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+# Install Node.js 20 directly (Ubuntu 22.04 ships 12.x, frappe needs >=18)
+RUN curl -fsSL https://nodejs.org/dist/v20.18.1/node-v20.18.1-linux-x64.tar.xz -o /tmp/node.tar.xz \
+    && mkdir -p /usr/local/nodejs \
+    && tar -xJf /tmp/node.tar.xz -C /usr/local/nodejs --strip-components=1 \
+    && rm /tmp/node.tar.xz \
+    && ln -sf /usr/local/nodejs/bin/node /usr/local/bin/node \
+    && ln -sf /usr/local/nodejs/bin/npm /usr/local/bin/npm \
+    && ln -sf /usr/local/nodejs/bin/npx /usr/local/bin/npx
 
-# Install ALL system dependencies
+# Install ALL system dependencies (no ubuntu nodejs/npm - we have our own)
 RUN apt-get update && apt-get install -y \
     git \
     python3 \
     python3-pip \
     python3-venv \
-    nodejs \
-    npm \
     mariadb-server \
     mariadb-client \
     redis-server \
@@ -42,11 +47,14 @@ RUN mkdir -p /run/mysqld && chown mysql:mysql /run/mysqld \
 # Install frappe-bench + yarn
 RUN pip3 install frappe-bench && npm install -g yarn
 
+# Verify node version
+RUN node --version && yarn --version
+
 # Switch to frappe user, let bench init create the directory
 USER frappe
 WORKDIR /home/frappe
 
-# Clone Frappe + ERPNext + HRMS + custom app (single layer for caching)
+# Clone Frappe + ERPNext + HRMS + custom app
 RUN bench init --skip-redis-config-generation --frappe-branch version-15 frappe-bench \
     && cd frappe-bench \
     && bench get-app erpnext --branch version-15 \
