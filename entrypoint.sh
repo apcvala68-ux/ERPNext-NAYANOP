@@ -7,15 +7,16 @@ echo "=== Starting All-in-One Automotive CRM ==="
 echo "[1/4] Starting MariaDB..."
 if [ ! -d "/var/lib/mysql/mysql" ]; then
     echo "  Initializing MariaDB data directory..."
-    mysql_install_db --user=mysql --datadir=/var/lib/mysql > /dev/null 2>&1
+    mariadb-install-db --user=mysql --datadir=/var/lib/mysql > /dev/null 2>&1 || \
+    mysql_install_db --user=mysql --datadir=/var/lib/mysql > /dev/null 2>&1 || true
 fi
 
-mysqld_safe --datadir=/var/lib/mysql &
+mariadbd-safe --datadir=/var/lib/mysql &
 sleep 3
 
 # Wait for MariaDB
 for i in $(seq 1 30); do
-    if mysqladmin ping -h localhost --silent 2>/dev/null; then
+    if mariadb-admin ping -h localhost --silent 2>/dev/null || mysqladmin ping -h localhost --silent 2>/dev/null; then
         echo "  MariaDB ready!"
         break
     fi
@@ -26,12 +27,19 @@ for i in $(seq 1 30); do
     sleep 1
 done
 
-# Setup MariaDB
+# Set root password for TCP connections (bench new-site uses TCP)
 echo "[2/4] Configuring MariaDB..."
-mysql -u root -e "CREATE DATABASE IF NOT EXISTS automotive_crm;" 2>/dev/null || true
-mysql -u root -e "CREATE USER IF NOT EXISTS 'frappe'@'localhost' IDENTIFIED BY '${DB_PASSWORD:-admin}';" 2>/dev/null || true
-mysql -u root -e "GRANT ALL PRIVILEGES ON automotive_crm.* TO 'frappe'@'localhost';" 2>/dev/null || true
-mysql -u root -e "FLUSH PRIVILEGES;" 2>/dev/null || true
+mariadb -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_PASSWORD:-admin}'; FLUSH PRIVILEGES;" 2>/dev/null || \
+mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_PASSWORD:-admin}'; FLUSH PRIVILEGES;" 2>/dev/null || true
+
+mariadb -u root -p"${DB_PASSWORD:-admin}" -e "CREATE DATABASE IF NOT EXISTS automotive_crm;" 2>/dev/null || \
+mysql -u root -p"${DB_PASSWORD:-admin}" -e "CREATE DATABASE IF NOT EXISTS automotive_crm;" 2>/dev/null || true
+
+mariadb -u root -p"${DB_PASSWORD:-admin}" -e "CREATE USER IF NOT EXISTS 'frappe'@'localhost' IDENTIFIED BY '${DB_PASSWORD:-admin}';" 2>/dev/null || \
+mysql -u root -p"${DB_PASSWORD:-admin}" -e "CREATE USER IF NOT EXISTS 'frappe'@'localhost' IDENTIFIED BY '${DB_PASSWORD:-admin}';" 2>/dev/null || true
+
+mariadb -u root -p"${DB_PASSWORD:-admin}" -e "GRANT ALL PRIVILEGES ON automotive_crm.* TO 'frappe'@'localhost'; FLUSH PRIVILEGES;" 2>/dev/null || \
+mysql -u root -p"${DB_PASSWORD:-admin}" -e "GRANT ALL PRIVILEGES ON automotive_crm.* TO 'frappe'@'localhost'; FLUSH PRIVILEGES;" 2>/dev/null || true
 
 # Start Redis
 echo "[3/4] Starting Redis..."
@@ -44,7 +52,7 @@ SITE_NAME="${SITE_NAME:-localhost}"
 cd /home/frappe/frappe-bench
 if [ ! -f "sites/${SITE_NAME}/site_config.json" ]; then
     echo "[4/4] Creating site: ${SITE_NAME}..."
-    su - frappe -c "cd /home/frappe/frappe-bench && yes '' | bench new-site '${SITE_NAME}' --mariadb-root-password root --admin-password '${ADMIN_PASSWORD:-admin}' --no-mariadb-socket --force"
+    su - frappe -c "cd /home/frappe/frappe-bench && yes '' | bench new-site '${SITE_NAME}' --mariadb-root-password '${DB_PASSWORD:-admin}' --admin-password '${ADMIN_PASSWORD:-admin}' --no-mariadb-socket --force"
 
     echo "Installing apps..."
     su - frappe -c "cd /home/frappe/frappe-bench && bench --site '${SITE_NAME}' install-app erpnext"
