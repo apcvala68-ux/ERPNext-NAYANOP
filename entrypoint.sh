@@ -1,0 +1,63 @@
+#!/bin/bash
+set -e
+
+echo "=== Starting All-in-One Automotive CRM ==="
+
+# Start MariaDB
+echo "[1/4] Starting MariaDB..."
+mysqld_safe --datadir=/var/lib/mysql &
+sleep 3
+
+# Wait for MariaDB
+for i in $(seq 1 30); do
+    if mysqladmin ping -h localhost --silent 2>/dev/null; then
+        echo "  MariaDB ready!"
+        break
+    fi
+    sleep 1
+done
+
+# Setup MariaDB
+echo "[2/4] Configuring MariaDB..."
+mysql -u root -e "CREATE DATABASE IF NOT EXISTS automotive_crm;" 2>/dev/null || true
+mysql -u root -e "CREATE USER IF NOT EXISTS 'frappe'@'localhost' IDENTIFIED BY '${DB_PASSWORD:-admin}';" 2>/dev/null || true
+mysql -u root -e "GRANT ALL PRIVILEGES ON automotive_crm.* TO 'frappe'@'localhost';" 2>/dev/null || true
+mysql -u root -e "FLUSH PRIVILEGES;" 2>/dev/null || true
+
+# Start Redis
+echo "[3/4] Starting Redis..."
+redis-server --daemonize yes --port 11000 --loglevel warning
+redis-server --daemonize yes --port 13000 --loglevel warning
+sleep 1
+
+# Create site if not exists
+SITE_NAME="${SITE_NAME:-localhost}"
+if [ ! -f "sites/${SITE_NAME}/site_config.json" ]; then
+    echo "[4/4] Creating site: ${SITE_NAME}..."
+    yes "" | bench new-site "${SITE_NAME}" \
+        --mariadb-root-password root \
+        --admin-password "${ADMIN_PASSWORD:-admin}" \
+        --no-mariadb-socket \
+        --force
+
+    echo "Installing apps..."
+    bench --site "${SITE_NAME}" install-app erpnext
+    bench --site "${SITE_NAME}" install-app hrms
+    bench --site "${SITE_NAME}" install-app automotive_crm
+
+    bench config -g set default_site "${SITE_NAME}"
+    bench build --app automotive_crm || true
+    bench --site "${SITE_NAME}" clear-cache || true
+else
+    echo "[4/4] Site ${SITE_NAME} exists. Running migrations..."
+    bench --site "${SITE_NAME}" migrate || true
+    bench --site "${SITE_NAME}" clear-cache || true
+fi
+
+echo "=== All services started ==="
+echo "App: http://localhost:8000"
+echo "Login: Administrator / ${ADMIN_PASSWORD:-admin}"
+echo ""
+
+# Start Frappe
+exec bench start
