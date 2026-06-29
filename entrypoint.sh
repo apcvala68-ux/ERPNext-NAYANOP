@@ -1,7 +1,10 @@
 #!/bin/bash
-set -e
 
 echo "=== Starting All-in-One Automotive CRM ==="
+
+# Kill any existing process on port 8000 (handles container restarts)
+fuser -k 8000/tcp 2>/dev/null || true
+sleep 1
 
 # Start a temporary port listener so Render detects the port immediately
 echo "Starting temporary health check listener on port 8000..."

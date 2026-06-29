@@ -69,7 +69,8 @@ RUN git clone https://github.com/apcvala68-ux/ERPNext-NAYANOP.git --branch main 
     && rm -rf /tmp/repo \
     && cd /home/frappe/frappe-bench \
     && env/bin/pip install -e apps/automotive_crm \
-    && echo "automotive_crm" >> sites/apps.txt \
+    && printf 'frappe\nerpnext\nhrms\nautomotive_crm\n' > sites/apps.txt \
+    && echo "--- apps.txt content ---" && cat sites/apps.txt && echo "--- end ---" \
     && chown -R frappe:frappe /home/frappe/frappe-bench
 
 # Switch back to root for entrypoint
