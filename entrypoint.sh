@@ -49,6 +49,8 @@ sleep 1
 
 # Create site if not exists
 SITE_NAME="${SITE_NAME:-localhost}"
+# Strip protocol prefix if present (Render sets full URL)
+SITE_NAME=$(echo "$SITE_NAME" | sed 's|https\?://||' | sed 's|/.*||')
 cd /home/frappe/frappe-bench
 if [ ! -f "sites/${SITE_NAME}/site_config.json" ]; then
     echo "[4/4] Creating site: ${SITE_NAME}..."
