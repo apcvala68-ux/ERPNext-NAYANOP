@@ -2,7 +2,7 @@
  "background_workers": 1,
  "default_site": "localhost",
  "file_watcher_port": 6787,
- "frappe_user": "root",
+ "frappe_user": "frappe",
  "gunicorn_workers": 2,
  "live_reload": true,
  "redis_cache": "redis://127.0.0.1:13000",
