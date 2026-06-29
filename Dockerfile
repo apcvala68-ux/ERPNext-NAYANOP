@@ -37,18 +37,18 @@ RUN mkdir -p /run/mysqld && chown mysql:mysql /run/mysqld \
 # Install frappe-bench
 RUN pip3 install frappe-bench
 
-# Create bench directory and set ownership
-RUN mkdir -p /home/frappe/frappe-bench && chown frappe:frappe /home/frappe/frappe-bench
-WORKDIR /home/frappe/frappe-bench
-
-# Clone Frappe + ERPNext + HRMS (as frappe user)
+# Switch to frappe user, let bench init create the directory
 USER frappe
-RUN bench init --skip-redis-config-generation --frappe-branch version-15 . \
+WORKDIR /home/frappe
+
+# Clone Frappe + ERPNext + HRMS
+RUN bench init --skip-redis-config-generation --frappe-branch version-15 frappe-bench \
+    && cd frappe-bench \
     && bench get-app erpnext --branch version-15 \
     && bench get-app hrms --branch version-15
 
 # Clone custom app
-RUN bench get-app automotive_crm https://github.com/apcvala68-ux/ERPNext-NAYANOP.git --branch main
+RUN cd /home/frappe/frappe-bench && bench get-app automotive_crm https://github.com/apcvala68-ux/ERPNext-NAYANOP.git --branch main
 
 # Switch back to root for entrypoint
 USER root
@@ -56,7 +56,7 @@ USER root
 # Copy configs from repo root
 COPY Procfile /home/frappe/frappe-bench/Procfile
 COPY common_site_config.json /home/frappe/frappe-bench/sites/common_site_config.json
-RUN chown frappe:frappe /home/frappe/frappe-bench/Procfile /home/frappe/frappe-bench/sites/common_site_config.json
+RUN chown -R frappe:frappe /home/frappe/frappe-bench
 
 # Copy entrypoint
 COPY entrypoint.sh /entrypoint.sh
