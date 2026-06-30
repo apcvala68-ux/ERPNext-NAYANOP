@@ -46,7 +46,7 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
     mysql_install_db --user=mysql --datadir=/var/lib/mysql > /dev/null 2>&1 || true
 fi
 
-mysqld_safe --datadir=/var/lib/mysql &
+mysqld_safe --datadir=/var/lib/mysql --bind-address=127.0.0.1 &
 sleep 3
 
 for i in $(seq 1 30); do
@@ -68,8 +68,8 @@ if [ -n "${DB_PASSWORD}" ] && [ "${DB_PASSWORD}" != "admin" ]; then
 fi
 
 echo "[3/4] Starting Redis..."
-redis-server --daemonize yes --port 11000 --loglevel warning --maxmemory 32mb --maxmemory-policy allkeys-lru
-redis-server --daemonize yes --port 13000 --loglevel warning --maxmemory 32mb --maxmemory-policy allkeys-lru
+redis-server --daemonize yes --port 11000 --bind 127.0.0.1 --loglevel warning --maxmemory 32mb --maxmemory-policy allkeys-lru
+redis-server --daemonize yes --port 13000 --bind 127.0.0.1 --loglevel warning --maxmemory 32mb --maxmemory-policy allkeys-lru
 sleep 1
 
 echo "[4/4] Setting admin password..."
