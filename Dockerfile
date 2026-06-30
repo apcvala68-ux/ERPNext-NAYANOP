@@ -76,7 +76,7 @@ RUN bench init --skip-redis-config-generation --frappe-branch version-15 frappe-
 RUN git clone https://github.com/apcvala68-ux/ERPNext-NAYANOP.git --branch main --depth 1 /tmp/repo \
     && cp -r /tmp/repo/automotive_crm /home/frappe/frappe-bench/apps/automotive_crm \
     && rm -rf /tmp/repo \
-    && cd /home/frappe/frappe-bench/apps/automotive_crm && pip install -e . \
+    && cd /home/frappe/frappe-bench/apps/automotive_crm && /home/frappe/frappe-bench/env/bin/pip install -e . --no-deps \
     && printf 'frappe\nerpnext\nhrms\nautomotive_crm\n' > /home/frappe/frappe-bench/sites/apps.txt \
     && echo "--- apps.txt content ---" && cat /home/frappe/frappe-bench/sites/apps.txt && echo "--- end ---" \
     && chown -R frappe:frappe /home/frappe/frappe-bench
