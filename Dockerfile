@@ -56,8 +56,9 @@ RUN pip3 install frappe-bench && npm install -g yarn
 # Verify node/yarn
 RUN node --version && yarn --version
 
-# Write bash profile for frappe user so su - finds node/yarn
-RUN echo 'export PATH="/usr/local/nodejs/bin:$PATH"' >> /home/frappe/.bashrc
+# Write BOTH .bash_profile and .bashrc so su - frappe -c finds node/yarn
+RUN echo 'export PATH="/usr/local/nodejs/bin:$PATH"' > /home/frappe/.bash_profile \
+    && echo 'export PATH="/usr/local/nodejs/bin:$PATH"' >> /home/frappe/.bashrc
 
 # Switch to frappe user
 USER frappe
@@ -69,12 +70,9 @@ RUN bench init --skip-redis-config-generation --frappe-branch version-15 frappe-
     && bench get-app erpnext --branch version-15 \
     && bench get-app hrms --branch version-15
 
-# Clone custom app directly into bench apps + pip install it
-RUN git clone https://github.com/apcvala68-ux/ERPNext-NAYANOP.git --branch main --depth 1 /tmp/repo \
-    && cp -r /tmp/repo/automotive_crm /home/frappe/frappe-bench/apps/automotive_crm \
-    && rm -rf /tmp/repo \
-    && cd /home/frappe/frappe-bench \
-    && env/bin/pip install -e apps/automotive_crm \
+# Install custom app via bench get-app (handles all package linking correctly)
+RUN cd /home/frappe/frappe-bench \
+    && bench get-app https://github.com/apcvala68-ux/ERPNext-NAYANOP.git --branch main \
     && printf 'frappe\nerpnext\nhrms\nautomotive_crm\n' > sites/apps.txt \
     && echo "--- apps.txt content ---" && cat sites/apps.txt && echo "--- end ---" \
     && chown -R frappe:frappe /home/frappe/frappe-bench
@@ -87,8 +85,14 @@ COPY Procfile /home/frappe/frappe-bench/Procfile
 COPY common_site_config.json /home/frappe/frappe-bench/sites/common_site_config.json
 RUN chown -R frappe:frappe /home/frappe/frappe-bench
 
-# Set default_site in common_site_config.json using sed (bench config -g not available)
-RUN sed -i 's/"default_site": "localhost"/"default_site": "'${SITE_NAME}'"/' /home/frappe/frappe-bench/sites/common_site_config.json
+# Set default_site using Python (sed breaks on URLs with ://)
+RUN python3 -c "\
+import json;\
+f='/home/frappe/frappe-bench/sites/common_site_config.json';\
+d=json.load(open(f));\
+d['default_site']='${SITE_NAME}';\
+json.dump(d,open(f,'w'),indent=1)\
+"
 
 # === CREATE SITE DURING BUILD ===
 RUN mkdir -p /run/mysqld && chown mysql:mysql /run/mysqld \

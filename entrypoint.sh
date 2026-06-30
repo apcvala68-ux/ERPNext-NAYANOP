@@ -23,7 +23,7 @@ TEMP_PID=$!
 sleep 1
 
 # Start MariaDB (loads pre-built site data from Docker image)
-echo "[1/3] Starting MariaDB..."
+echo "[1/4] Starting MariaDB..."
 if [ ! -d "/var/lib/mysql/mysql" ]; then
     echo "  Initializing MariaDB data directory..."
     mariadb-install-db --user=mysql --datadir=/var/lib/mysql > /dev/null 2>&1 || \
@@ -49,17 +49,21 @@ done
 
 # Update root password if DB_PASSWORD env var is set
 # Build sets root to mysql_native_password with 'admin'. Use -padmin to connect.
-echo "[2/3] Configuring MariaDB..."
+echo "[2/4] Configuring MariaDB..."
 if [ -n "${DB_PASSWORD}" ] && [ "${DB_PASSWORD}" != "admin" ]; then
     mariadb -u root -padmin -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_PASSWORD}'; FLUSH PRIVILEGES;" 2>/dev/null || \
     mysql -u root -padmin -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_PASSWORD}'; FLUSH PRIVILEGES;" 2>/dev/null || true
 fi
 
 # Start Redis
-echo "[3/3] Starting Redis..."
+echo "[3/4] Starting Redis..."
 redis-server --daemonize yes --port 11000 --loglevel warning
 redis-server --daemonize yes --port 13000 --loglevel warning
 sleep 1
+
+# Set admin password from ADMIN_PASSWORD env var (default 'admin' from build)
+echo "[4/4] Setting admin password..."
+su - frappe -c "cd /home/frappe/frappe-bench && bench set-admin-password '${ADMIN_PASSWORD:-admin}'" 2>/dev/null || true
 
 # Kill the temp listener
 kill $TEMP_PID 2>/dev/null || true
