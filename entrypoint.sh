@@ -2,14 +2,16 @@
 
 echo "=== Starting All-in-One Automotive CRM ==="
 
-# Render sets PORT env var (default 10000). Use it.
-echo "PORT env var: '${PORT}'"
 PORT="${PORT:-10000}"
+echo "PORT env var: '${PORT}'"
 echo "Using port: ${PORT}"
 
-# Start health check on port 8080 (separate from app port) to keep Render alive
+# Health check on the SAME port as bench serve ($PORT)
+# SO_REUSEADDR allows bench serve to rebind immediately after we kill this
 python3 -c "
-import http.server, socketserver
+import http.server, socketserver, sys
+
+PORT = int(sys.argv[1])
 
 class Handler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
@@ -20,15 +22,21 @@ class Handler(http.server.BaseHTTPRequestHandler):
     def log_message(self, format, *args):
         pass
 
-class ReuseTCPServer(socketserver.TCPServer):
-    allow_reuse_address = True
-
-server = ReuseTCPServer(('0.0.0.0', 8080), Handler)
-print('Health check on port 8080', flush=True)
+socketserver.TCPServer.allow_reuse_address = True
+server = socketserver.TCPServer(('0.0.0.0', PORT), Handler)
+print(f'Health check listening on port {PORT}', flush=True)
 server.serve_forever()
-" &
+" ${PORT} &
 HEALTH_PID=$!
 echo "Health check PID: ${HEALTH_PID}"
+sleep 2
+
+# Verify health check is actually listening
+if kill -0 ${HEALTH_PID} 2>/dev/null; then
+    echo "Health check confirmed running"
+else
+    echo "WARNING: Health check failed to start"
+fi
 
 # Start MariaDB
 echo "[1/4] Starting MariaDB..."
@@ -60,8 +68,8 @@ if [ -n "${DB_PASSWORD}" ] && [ "${DB_PASSWORD}" != "admin" ]; then
 fi
 
 echo "[3/4] Starting Redis..."
-redis-server --daemonize yes --port 11000 --loglevel warning
-redis-server --daemonize yes --port 13000 --loglevel warning
+redis-server --daemonize yes --port 11000 --loglevel warning --maxmemory 32mb --maxmemory-policy allkeys-lru
+redis-server --daemonize yes --port 13000 --loglevel warning --maxmemory 32mb --maxmemory-policy allkeys-lru
 sleep 1
 
 echo "[4/4] Setting admin password..."
@@ -70,13 +78,14 @@ su - frappe -c "cd /home/frappe/frappe-bench && bench set-admin-password '${ADMI
 SITE_HOST=$(echo "${RENDER_EXTERNAL_URL:-erpnext-nayanop.onrender.com}" | sed -E 's|https?://||;s|/.*||')
 echo "Detected hostname: ${SITE_HOST}"
 
-# Update site configs with correct port
 su - frappe -c "cd /home/frappe/frappe-bench && python3 -c \"
 import json
 f='sites/common_site_config.json'
 d=json.load(open(f))
 d['default_site']='${SITE_HOST}'
 d['webserver_port']=${PORT}
+d['gunicorn_workers']=1
+d['background_workers']=0
 json.dump(d,open(f,'w'),indent=1)
 print('common_site_config updated')
 \""
@@ -97,11 +106,12 @@ if os.path.exists(f):
 fi
 
 echo "=== Setup complete ==="
-echo "Starting bench on port ${PORT}"
 
-# Kill health check
+# Kill health check — bench serve will rebind immediately (SO_REUSEADDR)
+echo "Stopping health check and starting bench serve on port ${PORT}..."
 kill ${HEALTH_PID} 2>/dev/null || true
-sleep 2
+wait ${HEALTH_PID} 2>/dev/null || true
+sleep 1
 
-# Start Frappe on Render's assigned port
+# Start bench serve directly (no bench start — saves ~200MB RAM by skipping worker/schedule/socketio)
 exec su - frappe -c "export PATH='/usr/local/nodejs/bin:/usr/local/bin:$PATH' && cd /home/frappe/frappe-bench && bench serve --port ${PORT}"
