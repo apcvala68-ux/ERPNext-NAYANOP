@@ -1,0 +1,72 @@
+{
+  "colwidths": {
+    "OEM Customer": 200,
+    "Part Master": 150,
+    "Month": 100,
+    "Forecasted": 100,
+    "Actual": 100,
+    "Accuracy": 80
+  },
+  "columns": [
+    {
+      "fieldname": "oem_customer",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "label": "OEM Customer",
+      "options": "OEM Customer"
+    },
+    {
+      "fieldname": "part_master",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "label": "Part Master",
+      "options": "Part Master"
+    },
+    {
+      "fieldname": "forecast_month",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "Month"
+    },
+    {
+      "fieldname": "forecast_year",
+      "fieldtype": "Int",
+      "in_list_view": 1,
+      "label": "Year"
+    },
+    {
+      "fieldname": "forecasted_volume",
+      "fieldtype": "Int",
+      "in_list_view": 1,
+      "label": "Forecasted"
+    },
+    {
+      "fieldname": "actual_volume",
+      "fieldtype": "Int",
+      "in_list_view": 1,
+      "label": "Actual"
+    },
+    {
+      "fieldname": "accuracy",
+      "fieldtype": "Percent",
+      "in_list_view": 1,
+      "label": "Accuracy"
+    }
+  ],
+  "filters": [
+    {
+      "fieldname": "oem_customer",
+      "fieldtype": "Link",
+      "label": "OEM Customer",
+      "options": "OEM Customer"
+    },
+    {
+      "fieldname": "forecast_year",
+      "fieldtype": "Int",
+      "label": "Year"
+    }
+  ],
+  "name": "Sales Forecast",
+  "type": "Report",
+  "module": "Automotive CRM"
+}

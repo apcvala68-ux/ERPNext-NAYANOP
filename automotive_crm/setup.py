@@ -9,7 +9,7 @@ setup(
     description="Enterprise-grade CRM for automotive parts manufacturers",
     author="Your Organization",
     author_email="admin@yourorg.com",
-    packages=["automotive_crm"],
+    packages=["automotive_crm", "automotive_crm.automotive_crm"],
     zip_safe=False,
     include_package_data=True,
     install_requires=install_requires,

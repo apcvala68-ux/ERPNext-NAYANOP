@@ -14,24 +14,24 @@ app_include_js = "/assets/automotive_crm/js/automotive_crm.js"
 # DocType Events
 doc_events = {
     "CRM Deal": {
-        "on_update": "automotive_crm.api.deal_events.on_update",
-        "on_change": "automotive_crm.api.deal_events.on_change",
+        "on_update": "automotive_crm.automotive_crm.api.deal_events.on_update",
+        "on_change": "automotive_crm.automotive_crm.api.deal_events.on_change",
     },
     "CRM Lead": {
-        "after_insert": "automotive_crm.api.lead_events.after_insert",
+        "after_insert": "automotive_crm.automotive_crm.api.lead_events.after_insert",
     },
 }
 
 # Scheduled Tasks
 scheduler_events = {
     "daily": [
-        "automotive_crm.tasks.daily",
+        "automotive_crm.automotive_crm.tasks.daily",
     ],
     "weekly": [
-        "automotive_crm.tasks.weekly",
+        "automotive_crm.automotive_crm.tasks.weekly",
     ],
     "monthly": [
-        "automotive_crm.tasks.monthly",
+        "automotive_crm.automotive_crm.tasks.monthly",
     ],
 }
 
@@ -45,12 +45,12 @@ website_route_rules = [
 ]
 
 # Installation
-after_install = "automotive_crm.setup.after_install"
-after_migrate = "automotive_crm.setup.after_migrate"
+after_install = "automotive_crm.automotive_crm.setup.after_install"
+after_migrate = "automotive_crm.automotive_crm.setup.after_migrate"
 
 # Override whitelisted methods
 override_whitelisted_methods = {
-    "frappe.client.get_count": "automotive_crm.api.custom_get_count",
+    "frappe.client.get_count": "automotive_crm.automotive_crm.api.custom_get_count",
 }
 
 # Fixtures for Custom Fields
@@ -68,7 +68,7 @@ fixtures = [
 # Jinja methods
 jinja = {
     "methods": [
-        "automotive_crm.utils.jinja_methods",
+        "automotive_crm.automotive_crm.utils.jinja_methods",
     ],
 }
 
@@ -88,7 +88,7 @@ has_whitelisted_methods = True
 
 # Override DocType class
 override_doctype_class = {
-    "Quotation": "automotive_crm.overrides.quotation.Quotation",
+    "Quotation": "automotive_crm.automotive_crm.overrides.quotation.Quotation",
 }
 
 # Desktop
@@ -106,4 +106,4 @@ setup_wizard_requires = {
 }
 
 # Testing
-test_suite = "automotive_crm.tests"
+test_suite = "automotive_crm.automotive_crm.tests"

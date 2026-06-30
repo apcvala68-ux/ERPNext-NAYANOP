@@ -1,0 +1,77 @@
+{
+  "colwidths": {
+    "OEM Customer": 200,
+    "Total Complaints": 100,
+    "Critical": 80,
+    "Major": 80,
+    "Minor": 80,
+    "Open": 80,
+    "Resolved": 80
+  },
+  "columns": [
+    {
+      "fieldname": "oem_customer",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "label": "OEM Customer",
+      "options": "OEM Customer"
+    },
+    {
+      "fieldname": "total_complaints",
+      "fieldtype": "Int",
+      "in_list_view": 1,
+      "label": "Total Complaints"
+    },
+    {
+      "fieldname": "critical",
+      "fieldtype": "Int",
+      "in_list_view": 1,
+      "label": "Critical"
+    },
+    {
+      "fieldname": "major",
+      "fieldtype": "Int",
+      "in_list_view": 1,
+      "label": "Major"
+    },
+    {
+      "fieldname": "minor",
+      "fieldtype": "Int",
+      "in_list_view": 1,
+      "label": "Minor"
+    },
+    {
+      "fieldname": "open_count",
+      "fieldtype": "Int",
+      "in_list_view": 1,
+      "label": "Open"
+    },
+    {
+      "fieldname": "resolved",
+      "fieldtype": "Int",
+      "in_list_view": 1,
+      "label": "Resolved"
+    }
+  ],
+  "filters": [
+    {
+      "fieldname": "oem_customer",
+      "fieldtype": "Link",
+      "label": "OEM Customer",
+      "options": "OEM Customer"
+    },
+    {
+      "fieldname": "from_date",
+      "fieldtype": "Date",
+      "label": "From Date"
+    },
+    {
+      "fieldname": "to_date",
+      "fieldtype": "Date",
+      "label": "To Date"
+    }
+  ],
+  "name": "Quality Metrics",
+  "type": "Report",
+  "module": "Automotive CRM"
+}

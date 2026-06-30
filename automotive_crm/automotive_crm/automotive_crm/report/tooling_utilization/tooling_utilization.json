@@ -1,0 +1,72 @@
+{
+  "colwidths": {
+    "Tooling Code": 120,
+    "Tooling Name": 200,
+    "Type": 100,
+    "Status": 100,
+    "Current Shots": 100,
+    "Max Shots": 100,
+    "Utilization": 80
+  },
+  "columns": [
+    {
+      "fieldname": "tooling_code",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "Tooling Code"
+    },
+    {
+      "fieldname": "tooling_name",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "Tooling Name"
+    },
+    {
+      "fieldname": "tooling_type",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "Type"
+    },
+    {
+      "fieldname": "status",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "Status"
+    },
+    {
+      "fieldname": "current_shot_count",
+      "fieldtype": "Int",
+      "in_list_view": 1,
+      "label": "Current Shots"
+    },
+    {
+      "fieldname": "max_shot_count",
+      "fieldtype": "Int",
+      "in_list_view": 1,
+      "label": "Max Shots"
+    },
+    {
+      "fieldname": "utilization",
+      "fieldtype": "Percent",
+      "in_list_view": 1,
+      "label": "Utilization"
+    }
+  ],
+  "filters": [
+    {
+      "fieldname": "tooling_type",
+      "fieldtype": "Select",
+      "label": "Tooling Type",
+      "options": "Die\nMold\nFixture\nGauge\nJig\nOther"
+    },
+    {
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "label": "Status",
+      "options": "Active\nInactive\nUnder Maintenance\nRetired"
+    }
+  ],
+  "name": "Tooling Utilization",
+  "type": "Report",
+  "module": "Automotive CRM"
+}
