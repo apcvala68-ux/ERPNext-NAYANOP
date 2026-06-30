@@ -1,6 +1,8 @@
 # syntax=docker/dockerfile:1
 FROM ubuntu:22.04
 
+ARG SITE_NAME=localhost
+
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
@@ -73,8 +75,23 @@ RUN git clone https://github.com/apcvala68-ux/ERPNext-NAYANOP.git --branch main 
     && echo "--- apps.txt content ---" && cat sites/apps.txt && echo "--- end ---" \
     && chown -R frappe:frappe /home/frappe/frappe-bench
 
-# Switch back to root for entrypoint
+# === CREATE SITE DURING BUILD (bakes site into image for instant restarts) ===
+# Switch to root to start MariaDB, create site as frappe user, stop MariaDB
 USER root
+
+RUN mkdir -p /run/mysqld && chown mysql:mysql /run/mysqld \
+    && mysqld_safe --datadir=/var/lib/mysql --no-watch & \
+    && sleep 5 \
+    && for i in $(seq 1 30); do mariadb-admin ping -h localhost --silent 2>/dev/null && break || sleep 1; done \
+    && su - frappe -c "cd /home/frappe/frappe-bench && yes '' | bench new-site '${SITE_NAME}' --mariadb-root-password admin --admin-password admin --force" \
+    && su - frappe -c "cd /home/frappe/frappe-bench && bench --site '${SITE_NAME}' install-app erpnext" \
+    && su - frappe -c "cd /home/frappe/frappe-bench && bench --site '${SITE_NAME}' install-app hrms" \
+    && su - frappe -c "cd /home/frappe/frappe-bench && bench --site '${SITE_NAME}' install-app automotive_crm" \
+    && su - frappe -c "cd /home/frappe/frappe-bench && bench config -g set default_site '${SITE_NAME}'" \
+    && su - frappe -c "cd /home/frappe/frappe-bench && bench build --app automotive_crm" || true \
+    && su - frappe -c "cd /home/frappe/frappe-bench && bench --site '${SITE_NAME}' clear-cache" || true \
+    && mysqladmin -u root -padmin shutdown 2>/dev/null || true \
+    && rm -rf /tmp/* /var/tmp/*
 
 # Copy configs
 COPY Procfile /home/frappe/frappe-bench/Procfile

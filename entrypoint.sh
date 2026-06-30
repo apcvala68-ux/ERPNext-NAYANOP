@@ -6,7 +6,7 @@ echo "=== Starting All-in-One Automotive CRM ==="
 fuser -k 8000/tcp 2>/dev/null || true
 sleep 1
 
-# Start a temporary port listener so Render detects the port immediately
+# Start temporary health check listener so Render detects the port immediately
 echo "Starting temporary health check listener on port 8000..."
 python3 -c "
 import http.server, socketserver
@@ -22,8 +22,8 @@ with socketserver.TCPServer(('0.0.0.0', 8000), H) as httpd:
 TEMP_PID=$!
 sleep 1
 
-# Initialize MariaDB data dir if empty (fresh container)
-echo "[1/4] Starting MariaDB..."
+# Start MariaDB (loads pre-built site data from Docker image)
+echo "[1/3] Starting MariaDB..."
 if [ ! -d "/var/lib/mysql/mysql" ]; then
     echo "  Initializing MariaDB data directory..."
     mariadb-install-db --user=mysql --datadir=/var/lib/mysql > /dev/null 2>&1 || \
@@ -47,48 +47,16 @@ for i in $(seq 1 30); do
     sleep 1
 done
 
-# Set root password for TCP connections (bench new-site uses TCP)
-echo "[2/4] Configuring MariaDB..."
+# Set root password for TCP connections (bench uses TCP, not socket)
+echo "[2/3] Configuring MariaDB..."
 mariadb -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_PASSWORD:-admin}'; FLUSH PRIVILEGES;" 2>/dev/null || \
 mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_PASSWORD:-admin}'; FLUSH PRIVILEGES;" 2>/dev/null || true
 
-mariadb -u root -p"${DB_PASSWORD:-admin}" -e "CREATE DATABASE IF NOT EXISTS automotive_crm;" 2>/dev/null || \
-mysql -u root -p"${DB_PASSWORD:-admin}" -e "CREATE DATABASE IF NOT EXISTS automotive_crm;" 2>/dev/null || true
-
-mariadb -u root -p"${DB_PASSWORD:-admin}" -e "CREATE USER IF NOT EXISTS 'frappe'@'localhost' IDENTIFIED BY '${DB_PASSWORD:-admin}';" 2>/dev/null || \
-mysql -u root -p"${DB_PASSWORD:-admin}" -e "CREATE USER IF NOT EXISTS 'frappe'@'localhost' IDENTIFIED BY '${DB_PASSWORD:-admin}';" 2>/dev/null || true
-
-mariadb -u root -p"${DB_PASSWORD:-admin}" -e "GRANT ALL PRIVILEGES ON automotive_crm.* TO 'frappe'@'localhost'; FLUSH PRIVILEGES;" 2>/dev/null || \
-mysql -u root -p"${DB_PASSWORD:-admin}" -e "GRANT ALL PRIVILEGES ON automotive_crm.* TO 'frappe'@'localhost'; FLUSH PRIVILEGES;" 2>/dev/null || true
-
 # Start Redis
-echo "[3/4] Starting Redis..."
+echo "[3/3] Starting Redis..."
 redis-server --daemonize yes --port 11000 --loglevel warning
 redis-server --daemonize yes --port 13000 --loglevel warning
 sleep 1
-
-# Create site if not exists
-SITE_NAME="${SITE_NAME:-localhost}"
-# Strip protocol prefix if present (Render sets full URL)
-SITE_NAME=$(echo "$SITE_NAME" | sed 's|https\?://||' | sed 's|/.*||')
-cd /home/frappe/frappe-bench
-if [ ! -f "sites/${SITE_NAME}/site_config.json" ]; then
-    echo "[4/4] Creating site: ${SITE_NAME}..."
-    su - frappe -c "cd /home/frappe/frappe-bench && yes '' | bench new-site '${SITE_NAME}' --mariadb-root-password '${DB_PASSWORD:-admin}' --admin-password '${ADMIN_PASSWORD:-admin}' --force"
-
-    echo "Installing apps..."
-    su - frappe -c "cd /home/frappe/frappe-bench && bench --site '${SITE_NAME}' install-app erpnext"
-    su - frappe -c "cd /home/frappe/frappe-bench && bench --site '${SITE_NAME}' install-app hrms"
-    su - frappe -c "cd /home/frappe/frappe-bench && bench --site '${SITE_NAME}' install-app automotive_crm"
-
-    su - frappe -c "cd /home/frappe/frappe-bench && bench config -g set default_site '${SITE_NAME}'"
-    su - frappe -c "cd /home/frappe/frappe-bench && bench build --app automotive_crm" || true
-    su - frappe -c "cd /home/frappe/frappe-bench && bench --site '${SITE_NAME}' clear-cache" || true
-else
-    echo "[4/4] Site ${SITE_NAME} exists. Running migrations..."
-    su - frappe -c "cd /home/frappe/frappe-bench && bench --site '${SITE_NAME}' migrate" || true
-    su - frappe -c "cd /home/frappe/frappe-bench && bench --site '${SITE_NAME}' clear-cache" || true
-fi
 
 # Kill the temp listener
 kill $TEMP_PID 2>/dev/null || true
@@ -98,5 +66,5 @@ echo "App: http://localhost:8000"
 echo "Login: Administrator / ${ADMIN_PASSWORD:-admin}"
 echo ""
 
-# Start Frappe
+# Start Frappe (site is already built into the Docker image)
 exec su - frappe -c "cd /home/frappe/frappe-bench && bench start"
