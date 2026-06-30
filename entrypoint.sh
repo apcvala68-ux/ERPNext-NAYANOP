@@ -86,6 +86,8 @@ d['default_site']='${SITE_HOST}'
 d['webserver_port']=${PORT}
 d['gunicorn_workers']=1
 d['background_workers']=0
+d['force_https']=1
+d['enable_telemetry']=0
 json.dump(d,open(f,'w'),indent=1)
 print('common_site_config updated')
 \""
@@ -98,8 +100,8 @@ f='${SITE_DIR}/site_config.json'
 if os.path.exists(f):
     d=json.load(open(f))
     d['site_name']='${SITE_HOST}'
-    d['host_name']='${SITE_HOST}'
-    d['port']=${PORT}
+    d['host_name']='https://${SITE_HOST}'
+    d['developer_mode']=0
     json.dump(d,open(f,'w'),indent=1)
     print('site_config updated')
 \""
