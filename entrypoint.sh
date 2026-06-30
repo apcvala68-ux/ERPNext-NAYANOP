@@ -65,6 +65,35 @@ sleep 1
 echo "[4/4] Setting admin password..."
 su - frappe -c "cd /home/frappe/frappe-bench && bench set-admin-password '${ADMIN_PASSWORD:-admin}'" 2>/dev/null || true
 
+# Detect hostname from RENDER_EXTERNAL_URL or use default
+SITE_HOST=$(echo "${RENDER_EXTERNAL_URL:-erpnext-nayanop.onrender.com}" | sed -E 's|https?://||;s|/.*||')
+echo "Detected hostname: ${SITE_HOST}"
+
+# Update default_site in common_site_config.json dynamically
+su - frappe -c "cd /home/frappe/frappe-bench && python3 -c \"
+import json
+f='sites/common_site_config.json'
+d=json.load(open(f))
+d['default_site']='${SITE_HOST}'
+json.dump(d,open(f,'w'),indent=1)
+print('default_site set to: ${SITE_HOST}')
+\""
+
+# Update site_name in site config if site exists
+SITE_DIR="/home/frappe/frappe-bench/sites/${SITE_HOST}"
+if [ -d "$SITE_DIR" ]; then
+    su - frappe -c "cd /home/frappe/frappe-bench && python3 -c \"
+import json, os
+f='${SITE_DIR}/site_config.json'
+if os.path.exists(f):
+    d=json.load(open(f))
+    d['site_name']='${SITE_HOST}'
+    d['host_name']='${SITE_HOST}'
+    json.dump(d,open(f,'w'),indent=1)
+    print('site_config updated for ${SITE_HOST}')
+\""
+fi
+
 # Kill the temp listener and wait for port release
 echo "Stopping health check listener..."
 kill $TEMP_PID 2>/dev/null || true
@@ -80,7 +109,7 @@ if fuser 8000/tcp >/dev/null 2>&1; then
 fi
 
 echo "=== All services started ==="
-echo "App: http://localhost:8000"
+echo "App: https://erpnext-nayanop.onrender.com"
 echo "Login: Administrator / ${ADMIN_PASSWORD:-admin}"
 echo ""
 

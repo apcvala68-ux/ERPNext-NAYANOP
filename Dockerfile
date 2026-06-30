@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 FROM ubuntu:22.04
 
-ARG SITE_NAME=localhost
+ARG SITE_NAME=erpnext-nayanop.onrender.com
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONDONTWRITEBYTECODE=1

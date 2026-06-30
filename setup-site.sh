@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-RAW_SITE_NAME="${1:-localhost}"
+RAW_SITE_NAME="${1:-erpnext-nayanop.onrender.com}"
 SITE_NAME=$(echo "$RAW_SITE_NAME" | sed -E 's|https?://||;s|/.*||')
 BENCH_DIR="/home/frappe/frappe-bench"
 
