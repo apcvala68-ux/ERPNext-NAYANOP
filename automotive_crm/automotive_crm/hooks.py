@@ -100,10 +100,5 @@ desktop = {
     "label": "Automotive CRM",
 }
 
-# Installation
-setup_wizard_requires = {
-    "country": ["India", "United States", "Germany", "Japan", "China"],
-}
-
 # Testing
 test_suite = "automotive_crm.automotive_crm.tests"
