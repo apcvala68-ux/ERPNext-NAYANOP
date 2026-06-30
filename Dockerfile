@@ -71,13 +71,12 @@ RUN bench init --skip-redis-config-generation --frappe-branch version-15 frappe-
     && bench get-app hrms --branch version-15
 
 # Clone custom app manually (repo has app nested in automotive_crm/ subdir)
+# NO pip install -e — Frappe bench manages apps through sites/apps.txt + sys.path
 RUN git clone https://github.com/apcvala68-ux/ERPNext-NAYANOP.git --branch main --depth 1 /tmp/repo \
     && cp -r /tmp/repo/automotive_crm /home/frappe/frappe-bench/apps/automotive_crm \
     && rm -rf /tmp/repo \
-    && cd /home/frappe/frappe-bench \
-    && env/bin/pip install -e apps/automotive_crm \
-    && printf 'frappe\nerpnext\nhrms\nautomotive_crm\n' > sites/apps.txt \
-    && echo "--- apps.txt content ---" && cat sites/apps.txt && echo "--- end ---" \
+    && printf 'frappe\nerpnext\nhrms\nautomotive_crm\n' > /home/frappe/frappe-bench/sites/apps.txt \
+    && echo "--- apps.txt content ---" && cat /home/frappe/frappe-bench/sites/apps.txt && echo "--- end ---" \
     && chown -R frappe:frappe /home/frappe/frappe-bench
 
 # === SWITCH TO ROOT FOR SITE CREATION ===

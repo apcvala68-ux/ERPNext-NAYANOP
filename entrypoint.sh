@@ -74,4 +74,5 @@ echo "Login: Administrator / ${ADMIN_PASSWORD:-admin}"
 echo ""
 
 # Start Frappe (site is already built into the Docker image)
-exec su - frappe -c "cd /home/frappe/frappe-bench && bench start"
+# Pass PATH explicitly so yarn/node are found by supervisord processes
+exec su - frappe -c "export PATH='/usr/local/nodejs/bin:/usr/local/bin:$PATH' && cd /home/frappe/frappe-bench && bench start"

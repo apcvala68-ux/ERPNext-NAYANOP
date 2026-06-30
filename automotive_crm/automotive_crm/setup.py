@@ -50,8 +50,12 @@ def create_custom_fields():
     ]
 
     for field in custom_fields:
-        if not frappe.db.exists("Custom Field", {"dt": field["dt"], "fieldname": field["fieldname"]}):
-            frappe.get_doc({"doctype": "Custom Field", **field}).insert()
+        try:
+            if not frappe.db.exists("Custom Field", {"dt": field["dt"], "fieldname": field["fieldname"]}):
+                if frappe.db.exists("DocType", field["dt"]):
+                    frappe.get_doc({"doctype": "Custom Field", **field}).insert()
+        except Exception:
+            pass
 
 
 def create_property_setters():
@@ -66,8 +70,12 @@ def create_property_setters():
     ]
 
     for setter in property_setters:
-        if not frappe.db.exists("Property Setter", {"dt": setter["dt"], "property": setter["property"]}):
-            frappe.get_doc({"doctype": "Property Setter", **setter}).insert()
+        try:
+            if not frappe.db.exists("Property Setter", {"dt": setter["dt"], "property": setter["property"]}):
+                if frappe.db.exists("DocType", setter["dt"]):
+                    frappe.get_doc({"doctype": "Property Setter", **setter}).insert()
+        except Exception:
+            pass
 
 
 def create_initial_data():
