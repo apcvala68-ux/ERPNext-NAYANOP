@@ -94,7 +94,7 @@ RUN python3 -c "\
 import json, re;\
 f='/home/frappe/frappe-bench/sites/common_site_config.json';\
 d=json.load(open(f));\
-d['default_site']=re.sub(r'^https?://','',re.sub(r'/.*$','', '${SITE_NAME}'));\
+d['default_site']=re.sub(r'/.*$','',re.sub(r'^https?://','', '${SITE_NAME}'));\
 json.dump(d,open(f,'w'),indent=1)\
 "
 

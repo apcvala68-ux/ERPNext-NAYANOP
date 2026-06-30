@@ -2,8 +2,7 @@
 set -e
 
 RAW_SITE_NAME="${1:-localhost}"
-# Strip protocol and trailing slashes to get hostname
-SITE_NAME=$(echo "$RAW_SITE_NAME" | sed 's|https\?://||;s|/.*||')
+SITE_NAME=$(echo "$RAW_SITE_NAME" | sed -E 's|https?://||;s|/.*||')
 BENCH_DIR="/home/frappe/frappe-bench"
 
 echo "=== Starting MariaDB ==="
@@ -17,8 +16,15 @@ for i in $(seq 1 30); do
         echo "MariaDB ready!"
         break
     fi
+    if [ "$i" -eq 30 ]; then
+        echo "ERROR: MariaDB failed to start within 30 seconds"
+        exit 1
+    fi
     sleep 1
 done
+
+echo "=== Setting MariaDB root password ==="
+mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED VIA mysql_native_password USING PASSWORD('admin'); FLUSH PRIVILEGES;"
 
 echo "=== Creating site: ${SITE_NAME} ==="
 su - frappe -c "cd ${BENCH_DIR} && yes '' | bench new-site '${SITE_NAME}' --mariadb-root-password admin --admin-password admin --force"
