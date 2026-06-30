@@ -75,21 +75,15 @@ jinja = {
 # App theme
 app_theme = "blue"
 
-# User permission
-user_permission = {
-    "OEM Customer": {
-        "role": ["Sales Manager", "Sales User"],
-        "applicable_for": "Company",
-    },
+# has_permission hook for OEM Customer (standard Frappe hook)
+has_permission = {
+    "OEM Customer": "automotive_crm.automotive_crm.api.custom_methods.oem_customer_permission",
 }
 
-# Has Whitelisted Methods
-has_whitelisted_methods = True
-
-# Override DocType class
-override_doctype_class = {
-    "Quotation": "automotive_crm.automotive_crm.overrides.quotation.Quotation",
-}
+# Override DocType class (removed — will add back after deploy)
+# override_doctype_class = {
+#     "Quotation": "automotive_crm.automotive_crm.overrides.quotation.Quotation",
+# }
 
 # Desktop
 desktop = {
