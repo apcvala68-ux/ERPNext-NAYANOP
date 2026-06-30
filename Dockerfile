@@ -8,7 +8,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV PATH="/usr/local/nodejs/bin:${PATH}"
 
-# Install curl first (not in base ubuntu image), then Node.js 20
+# Install curl first, then Node.js 20
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates \
     && curl -fsSL https://nodejs.org/dist/v20.18.1/node-v20.18.1-linux-x64.tar.gz -o /tmp/node.tar.gz \
     && mkdir -p /usr/local/nodejs \
@@ -17,9 +17,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     && ln -sf /usr/local/nodejs/bin/node /usr/local/bin/node \
     && ln -sf /usr/local/nodejs/bin/npm /usr/local/bin/npm \
     && ln -sf /usr/local/nodejs/bin/npx /usr/local/bin/npx \
+    && ln -sf /usr/local/nodejs/bin/yarn /usr/local/bin/yarn \
     && rm -rf /var/lib/apt/lists/*
 
-# Install ALL system dependencies (no ubuntu nodejs/npm - we have our own)
+# Install ALL system dependencies
 RUN apt-get update && apt-get install -y \
     git \
     python3 \
@@ -52,10 +53,13 @@ RUN mkdir -p /run/mysqld && chown mysql:mysql /run/mysqld \
 # Install frappe-bench + yarn
 RUN pip3 install frappe-bench && npm install -g yarn
 
-# Verify node version
+# Verify node/yarn
 RUN node --version && yarn --version
 
-# Switch to frappe user, let bench init create the directory
+# Write bash profile for frappe user so su - finds node/yarn
+RUN echo 'export PATH="/usr/local/nodejs/bin:$PATH"' >> /home/frappe/.bashrc
+
+# Switch to frappe user
 USER frappe
 WORKDIR /home/frappe
 
@@ -75,28 +79,31 @@ RUN git clone https://github.com/apcvala68-ux/ERPNext-NAYANOP.git --branch main 
     && echo "--- apps.txt content ---" && cat sites/apps.txt && echo "--- end ---" \
     && chown -R frappe:frappe /home/frappe/frappe-bench
 
-# === CREATE SITE DURING BUILD (bakes site into image for instant restarts) ===
-# Switch to root to start MariaDB, create site as frappe user, stop MariaDB
+# === SWITCH TO ROOT FOR SITE CREATION ===
 USER root
 
+# Copy configs BEFORE site creation
+COPY Procfile /home/frappe/frappe-bench/Procfile
+COPY common_site_config.json /home/frappe/frappe-bench/sites/common_site_config.json
+RUN chown -R frappe:frappe /home/frappe/frappe-bench
+
+# Set default_site in common_site_config.json using sed (bench config -g not available)
+RUN sed -i 's/"default_site": "localhost"/"default_site": "'${SITE_NAME}'"/' /home/frappe/frappe-bench/sites/common_site_config.json
+
+# === CREATE SITE DURING BUILD ===
 RUN mkdir -p /run/mysqld && chown mysql:mysql /run/mysqld \
-    && mysqld_safe --datadir=/var/lib/mysql --no-watch & \
+    && mysqld --user=mysql --datadir=/var/lib/mysql & \
     && sleep 5 \
     && for i in $(seq 1 30); do mariadb-admin ping -h localhost --silent 2>/dev/null && break || sleep 1; done \
     && su - frappe -c "cd /home/frappe/frappe-bench && yes '' | bench new-site '${SITE_NAME}' --mariadb-root-password admin --admin-password admin --force" \
     && su - frappe -c "cd /home/frappe/frappe-bench && bench --site '${SITE_NAME}' install-app erpnext" \
     && su - frappe -c "cd /home/frappe/frappe-bench && bench --site '${SITE_NAME}' install-app hrms" \
     && su - frappe -c "cd /home/frappe/frappe-bench && bench --site '${SITE_NAME}' install-app automotive_crm" \
-    && su - frappe -c "cd /home/frappe/frappe-bench && bench config -g set default_site '${SITE_NAME}'" \
     && su - frappe -c "cd /home/frappe/frappe-bench && bench build --app automotive_crm" || true \
     && su - frappe -c "cd /home/frappe/frappe-bench && bench --site '${SITE_NAME}' clear-cache" || true \
-    && mysqladmin -u root -padmin shutdown 2>/dev/null || true \
+    && killall mysqld 2>/dev/null || true \
+    && sleep 2 \
     && rm -rf /tmp/* /var/tmp/*
-
-# Copy configs
-COPY Procfile /home/frappe/frappe-bench/Procfile
-COPY common_site_config.json /home/frappe/frappe-bench/sites/common_site_config.json
-RUN chown -R frappe:frappe /home/frappe/frappe-bench
 
 # Copy entrypoint
 COPY entrypoint.sh /entrypoint.sh

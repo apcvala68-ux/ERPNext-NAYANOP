@@ -47,10 +47,13 @@ for i in $(seq 1 30); do
     sleep 1
 done
 
-# Set root password for TCP connections (bench uses TCP, not socket)
+# Update root password if DB_PASSWORD env var is set
+# Build sets root to mysql_native_password with 'admin'. Use -padmin to connect.
 echo "[2/3] Configuring MariaDB..."
-mariadb -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_PASSWORD:-admin}'; FLUSH PRIVILEGES;" 2>/dev/null || \
-mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_PASSWORD:-admin}'; FLUSH PRIVILEGES;" 2>/dev/null || true
+if [ -n "${DB_PASSWORD}" ] && [ "${DB_PASSWORD}" != "admin" ]; then
+    mariadb -u root -padmin -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_PASSWORD}'; FLUSH PRIVILEGES;" 2>/dev/null || \
+    mysql -u root -padmin -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_PASSWORD}'; FLUSH PRIVILEGES;" 2>/dev/null || true
+fi
 
 # Start Redis
 echo "[3/3] Starting Redis..."
