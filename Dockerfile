@@ -97,19 +97,8 @@ json.dump(d,open(f,'w'),indent=1)\
 "
 
 # === CREATE SITE DURING BUILD ===
-RUN mkdir -p /run/mysqld && chown mysql:mysql /run/mysqld \
-    && mysqld --user=mysql --datadir=/var/lib/mysql & \
-    && sleep 5 \
-    && for i in $(seq 1 30); do mariadb-admin ping -h localhost --silent 2>/dev/null && break || sleep 1; done \
-    && su - frappe -c "cd /home/frappe/frappe-bench && yes '' | bench new-site '${SITE_NAME}' --mariadb-root-password admin --admin-password admin --force" \
-    && su - frappe -c "cd /home/frappe/frappe-bench && bench --site '${SITE_NAME}' install-app erpnext" \
-    && su - frappe -c "cd /home/frappe/frappe-bench && bench --site '${SITE_NAME}' install-app hrms" \
-    && su - frappe -c "cd /home/frappe/frappe-bench && bench --site '${SITE_NAME}' install-app automotive_crm" \
-    && su - frappe -c "cd /home/frappe/frappe-bench && bench build --app automotive_crm" || true \
-    && su - frappe -c "cd /home/frappe/frappe-bench && bench --site '${SITE_NAME}' clear-cache" || true \
-    && killall mysqld 2>/dev/null || true \
-    && sleep 2 \
-    && rm -rf /tmp/* /var/tmp/*
+COPY setup-site.sh /tmp/setup-site.sh
+RUN chmod +x /tmp/setup-site.sh && /tmp/setup-site.sh '${SITE_NAME}'
 
 # Copy entrypoint
 COPY entrypoint.sh /entrypoint.sh
