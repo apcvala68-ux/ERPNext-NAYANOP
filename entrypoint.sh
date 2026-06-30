@@ -65,8 +65,19 @@ sleep 1
 echo "[4/4] Setting admin password..."
 su - frappe -c "cd /home/frappe/frappe-bench && bench set-admin-password '${ADMIN_PASSWORD:-admin}'" 2>/dev/null || true
 
-# Kill the temp listener
+# Kill the temp listener and wait for port release
+echo "Stopping health check listener..."
 kill $TEMP_PID 2>/dev/null || true
+wait $TEMP_PID 2>/dev/null || true
+fuser -k 8000/tcp 2>/dev/null || true
+sleep 2
+
+# Verify port 8000 is free
+if fuser 8000/tcp >/dev/null 2>&1; then
+    echo "WARNING: Port 8000 still in use, force killing..."
+    fuser -k -9 8000/tcp 2>/dev/null || true
+    sleep 2
+fi
 
 echo "=== All services started ==="
 echo "App: http://localhost:8000"
