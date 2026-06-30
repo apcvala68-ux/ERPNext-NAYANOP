@@ -71,10 +71,12 @@ RUN bench init --skip-redis-config-generation --frappe-branch version-15 frappe-
     && bench get-app hrms --branch version-15
 
 # Clone custom app manually (repo has app nested in automotive_crm/ subdir)
-# NO pip install -e — Frappe bench manages apps through sites/apps.txt + sys.path
+# pip install -e IS required — bench new-site imports the app to read modules.txt
+# Outer __init__.py and hooks.py were deleted, so no namespace conflict
 RUN git clone https://github.com/apcvala68-ux/ERPNext-NAYANOP.git --branch main --depth 1 /tmp/repo \
     && cp -r /tmp/repo/automotive_crm /home/frappe/frappe-bench/apps/automotive_crm \
     && rm -rf /tmp/repo \
+    && cd /home/frappe/frappe-bench/apps/automotive_crm && pip install -e . \
     && printf 'frappe\nerpnext\nhrms\nautomotive_crm\n' > /home/frappe/frappe-bench/sites/apps.txt \
     && echo "--- apps.txt content ---" && cat /home/frappe/frappe-bench/sites/apps.txt && echo "--- end ---" \
     && chown -R frappe:frappe /home/frappe/frappe-bench
