@@ -50,7 +50,7 @@ after_migrate = "automotive_crm.automotive_crm.setup.after_migrate"
 
 # Override whitelisted methods
 override_whitelisted_methods = {
-    "frappe.client.get_count": "automotive_crm.automotive_crm.api.custom_get_count",
+    "frappe.client.get_count": "automotive_crm.automotive_crm.api.custom_methods.custom_get_count",
 }
 
 # Fixtures for Custom Fields
