@@ -26,6 +26,12 @@ done
 echo "=== Setting MariaDB root password ==="
 mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED VIA mysql_native_password USING PASSWORD('admin'); FLUSH PRIVILEGES;"
 
+echo "=== Starting Redis ==="
+redis-server --daemonize yes --port 11000 --loglevel warning
+redis-server --daemonize yes --port 13000 --loglevel warning
+sleep 1
+echo "Redis started!"
+
 echo "=== Creating site: ${SITE_NAME} ==="
 su - frappe -c "cd ${BENCH_DIR} && yes '' | bench new-site '${SITE_NAME}' --mariadb-root-password admin --admin-password admin --force"
 
@@ -43,6 +49,10 @@ su - frappe -c "cd ${BENCH_DIR} && bench build --app automotive_crm" || true
 
 echo "=== Clearing cache ==="
 su - frappe -c "cd ${BENCH_DIR} && bench --site '${SITE_NAME}' clear-cache" || true
+
+echo "=== Stopping Redis ==="
+redis-cli -p 11000 shutdown 2>/dev/null || true
+redis-cli -p 13000 shutdown 2>/dev/null || true
 
 echo "=== Stopping MariaDB ==="
 kill ${MYSQL_PID} 2>/dev/null || true
