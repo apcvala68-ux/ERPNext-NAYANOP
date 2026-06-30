@@ -100,7 +100,7 @@ json.dump(d,open(f,'w'),indent=1)\
 
 # === CREATE SITE DURING BUILD ===
 COPY setup-site.sh /tmp/setup-site.sh
-RUN chmod +x /tmp/setup-site.sh && /tmp/setup-site.sh '${SITE_NAME}'
+RUN chmod +x /tmp/setup-site.sh && /tmp/setup-site.sh "${SITE_NAME}"
 
 # Copy entrypoint
 COPY entrypoint.sh /entrypoint.sh
