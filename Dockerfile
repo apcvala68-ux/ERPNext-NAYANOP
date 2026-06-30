@@ -89,12 +89,12 @@ COPY Procfile /home/frappe/frappe-bench/Procfile
 COPY common_site_config.json /home/frappe/frappe-bench/sites/common_site_config.json
 RUN chown -R frappe:frappe /home/frappe/frappe-bench
 
-# Set default_site using Python (sed breaks on URLs with ://)
+# Set default_site using Python — strip protocol to get hostname
 RUN python3 -c "\
-import json;\
+import json, re;\
 f='/home/frappe/frappe-bench/sites/common_site_config.json';\
 d=json.load(open(f));\
-d['default_site']='${SITE_NAME}';\
+d['default_site']=re.sub(r'^https?://','',re.sub(r'/.*$','', '${SITE_NAME}'));\
 json.dump(d,open(f,'w'),indent=1)\
 "
 

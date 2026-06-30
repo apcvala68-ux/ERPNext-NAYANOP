@@ -1,7 +1,9 @@
 #!/bin/bash
 set -e
 
-SITE_NAME="${1:-localhost}"
+RAW_SITE_NAME="${1:-localhost}"
+# Strip protocol and trailing slashes to get hostname
+SITE_NAME=$(echo "$RAW_SITE_NAME" | sed 's|https\?://||;s|/.*||')
 BENCH_DIR="/home/frappe/frappe-bench"
 
 echo "=== Starting MariaDB ==="
