@@ -106,6 +106,6 @@ RUN chmod +x /tmp/setup-site.sh && /tmp/setup-site.sh "${SITE_NAME}"
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-EXPOSE 8000 9000
+EXPOSE 10000 9000
 
 ENTRYPOINT ["/entrypoint.sh"]

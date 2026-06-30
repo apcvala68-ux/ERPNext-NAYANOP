@@ -1,4 +1,4 @@
-web: bench serve --port 8000
+web: bench serve --port $PORT
 socketio: bench socketio
 schedule: bench schedule
 worker: bench worker
