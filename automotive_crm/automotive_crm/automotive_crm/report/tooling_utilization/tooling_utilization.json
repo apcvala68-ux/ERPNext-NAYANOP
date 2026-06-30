@@ -68,5 +68,6 @@
   ],
   "name": "Tooling Utilization",
   "type": "Report",
-  "module": "Automotive CRM"
+  "module": "Automotive CRM",
+  "doctype": "Report"
 }

@@ -54,5 +54,6 @@
   ],
   "name": "Revenue by OEM",
   "type": "Report",
-  "module": "Automotive CRM"
+  "module": "Automotive CRM",
+  "doctype": "Report"
 }

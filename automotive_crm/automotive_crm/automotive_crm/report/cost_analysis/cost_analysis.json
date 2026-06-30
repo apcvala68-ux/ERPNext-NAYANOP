@@ -71,5 +71,6 @@
   ],
   "name": "Cost Analysis",
   "type": "Report",
-  "module": "Automotive CRM"
+  "module": "Automotive CRM",
+  "doctype": "Report"
 }

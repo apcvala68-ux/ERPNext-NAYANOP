@@ -53,5 +53,6 @@
   ],
   "name": "RFQ Summary",
   "type": "Report",
-  "module": "Automotive CRM"
+  "module": "Automotive CRM",
+  "doctype": "Report"
 }
